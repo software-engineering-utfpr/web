@@ -1,26 +1,18 @@
-// login.js
-
-import React, { Component } from 'react';
+import React from 'react';
 import { Row, Typography } from 'antd';
+
+import MainLayout from '../../components/layout';
 
 const { Text } = Typography;
 
-class Login extends Component {
-  constructor() {
-    super();
-
-    this.state = { };
-  }
-
-  render() {
-    return (
-      <Row>
-				<Row style = {{ textAlign: 'center', marginTop: 8 }}>
-					<Text> Tela para fazer o Login. </Text>
-				</Row>
+const Login = props => {
+	return (
+    <MainLayout>
+      <Row style = {{ textAlign: 'center', marginTop: 8 }}>
+        <Text> Tela para fazer o Login. </Text>
       </Row>
-    );
-  }
-}
+    </MainLayout>
+	);
+};
 
 export default Login;
