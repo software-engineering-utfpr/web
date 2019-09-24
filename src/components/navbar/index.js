@@ -24,7 +24,7 @@ const NavBar = props => {
     const [affixed, setAffixed] = useState(false);
 
   useEffect(() => {
-    axios.get(`/api/users/${getID()}`).then(res => {
+    axios.get(`/api/managers/${getID()}`).then(res => {
       setUser(res.data);
     }).catch(err => {
       if(err.response && err.response.status === 503) err503();
