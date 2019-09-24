@@ -7,7 +7,7 @@ import './style.css';
 
 const { Text } = Typography;
 
-const Signin = props => {
+const UsersWeb = props => {
   return (
     <MainLayout>
       <Text>oioio</Text>
@@ -15,4 +15,4 @@ const Signin = props => {
   );
 };
 
-export default Signin;
+export default UsersWeb;
