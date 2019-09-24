@@ -5,7 +5,7 @@ import { ConfigProvider } from 'antd';
 import ptBR from 'antd/lib/locale-provider/pt_BR';
 import moment from 'moment';
 
-import Login from './pages/login/login';
+import Login from './pages/login';
 
 import 'moment/locale/pt-br';
 import './App.css';

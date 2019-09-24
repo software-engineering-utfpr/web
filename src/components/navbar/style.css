@@ -31,7 +31,7 @@ header.haccoon-header-affixed {
 }
 
 .header-content {
-  padding: 0 25px;
+  padding: 0 115px;
   display: flex;
   -webkit-box-align: stretch;
   -ms-flex-align: stretch;
@@ -74,19 +74,21 @@ header.haccoon-header-affixed {
   max-width: 100%;
 }
 
-.header-menu.header-menu,
+.header-menu,
 .header-menu.ant-menu-horizontal > .ant-menu-item-selected, .header-menu.ant-menu-horizontal > .ant-menu-submenu-selected,
 .header-menu .ant-menu-item, .header-menu .ant-menu-submenu {
   border-bottom: none !important;
 }
 
-.header-menu.ant-menu-horizontal > .ant-menu-item-selected:after, .header-menu.ant-menu-horizontal > .ant-menu-submenu-selected:after {
-  content: "";
-  display: block;
-  margin: 0 auto;
-  width: 50%;
-  margin-top: -1px;
-  border-bottom: 2px solid #00AD45;
+.header-menu .ant-menu-item > a {
+  padding: 0 10px;
+}
+
+.header-menu.ant-menu-horizontal > .ant-menu-item-selected a, .header-menu.ant-menu-horizontal > .ant-menu-submenu-selected {
+  background: #00AD450F;
+  border-radius: 4px;
+  color: #00AD45;
+  font-weight: 500;
 }
 
 .header-card-info .ant-card-meta-detail > div:not(:last-child) {

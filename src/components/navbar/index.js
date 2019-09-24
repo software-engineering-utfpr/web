@@ -24,7 +24,7 @@ const NavBar = props => {
     const [affixed, setAffixed] = useState(false);
 
   useEffect(() => {
-    axios.get(`/api/usuarios/${getID()}`).then(res => {
+    axios.get(`/api/users/${getID()}`).then(res => {
       setUser(res.data);
     }).catch(err => {
       if(err.response && err.response.status === 503) err503();
@@ -44,20 +44,24 @@ const NavBar = props => {
     }, 1500);
   }
 
-  if(nav) return (<Redirect to = { nav } />);
+  if(nav) return (<Redirect to = {nav} />);
   else {
     return(
       <Affix offsetTop = {-100} onChange = { affixed => setAffixed(affixed) }>
         <Header className = { !affixed ? 'haccoon-header' : 'haccoon-header-affixed' }>
           <Row className = "header-content">
+            <Link to = "/home">
+              <img style = {{ height: affixed ? 45 : 55 }} src = {logo} alt = "Logo Rio do Campo Limpo" />
+            </Link>
+
             <Menu className = "header-menu" selectedKeys = {[props.page || 'home']} mode = "horizontal">
-              <Menu.Item key = "home">
+              <Menu.Item key = "home" style = {{ paddingRight: 0, paddingLeft: 40 }}>
                 <Link to = "/home">
-                  <Icon type = "home" style = {{ margin: 0 }} />
+                  <Icon type = "home" style = {{ margin: 0 }} /> &nbsp; Home
                 </Link>
               </Menu.Item>
 
-              <Menu.Item key = "calendario">
+              <Menu.Item key = "calendario" style = {{ paddingRight: 0 }}>
                 <Link to = "/calendario"> Calendário </Link>
               </Menu.Item>
               
@@ -100,10 +104,6 @@ const NavBar = props => {
                 </Menu.Item>
               </Menu.SubMenu>
             </Menu>
-          
-            <Link to = "/home">
-              <img style = {{ height: affixed ? 45 : 55 }} src = {logo} alt = "Logo Rio do Campo Limpo" />
-            </Link>
 
             <Col className = "header-outer-options">
               <Popover
@@ -114,7 +114,7 @@ const NavBar = props => {
                     <Card.Meta
                       className = "header-card-info"
                       style = {{ padding: '2rem 1rem', background: '#F3F5F9', margin: 0 }}
-                      avatar = {<Avatar shape = "square" size = {60} src = { user.image } />}
+                      avatar = {<Avatar shape = "square" size = {60} style = {{ filter: 'grayscale(50%)' }} src = { user.image } />}
                       title = {<Text strong> { user.name } </Text>}
                       description = {<Text type = "secondary" ellipsis style = {{ width: '100%' }}> { user.email } </Text>}
                     />
@@ -151,7 +151,7 @@ const NavBar = props => {
                   </Card>
                 )}
               >
-                <span style = {{ marginLeft: 10, fontSize: 13 }}>
+                <span style = {{ marginLeft: 10, fontSize: 13, cursor: 'pointer' }}>
                   <Text> Olá, </Text> <Text className = "username" strong> { user.name.replace(/ .*/, '') } </Text>
                   <Avatar shape = "square" size = { affixed ? 40 : 45 } style = {{ marginLeft: 4 }} src = { user.image } />
                 </span>
