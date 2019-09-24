@@ -17,9 +17,9 @@ const { Text } = Typography;
 const NavBar = props => {
     const [nav, setNav] = useState('');
     const [user, setUser] = useState({
-      name: 'Vitor Bueno',
-      image: 'https://avatars1.githubusercontent.com/u/34288588?s=400&u=1d254786cc7835cf967b7c8209366233693730da&v=4',
-      email: 'vitorcamargo@alunos.utfpr.edu.br'
+      name: '',
+      image: '',
+      email: ''
     });
     const [affixed, setAffixed] = useState(false);
 
