@@ -30,9 +30,9 @@ const Login = props => {
         const { email, password } = values;
 
         axios.post('/api/managers/login', { email, password }).then(res => {
-          login(res.data.token, res.data.user.name, res.data.user.superuser, res.data.user.id);
+          login(res.data.token, res.data.manager.name, res.data.manager.superuser, res.data.manager.id);
 
-          const hide = message.loading(`Bem-vindo ${res.data.user.name}!! 🤗`, 0);
+          const hide = message.loading(`Bem-vindo ${res.data.manager.name}!! 🤗`, 0);
           setTimeout(hide, 1500);
 
           setNav('/home');
