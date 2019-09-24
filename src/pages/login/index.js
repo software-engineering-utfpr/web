@@ -29,8 +29,8 @@ const Login = props => {
       if (!err) {
         const { email, password } = values;
 
-        axios.post('/api/users/login/web', { email, password }).then(res => {
-          login(res.data.token, res.data.user.name, res.data.user.id);
+        axios.post('/api/users/login', { email, password }).then(res => {
+          login(res.data.token, res.data.user.name, res.data.user.superuser, res.data.user.id);
 
           const hide = message.loading(`Bem-vindo ${res.data.user.name}!! 🤗`, 0);
           setTimeout(hide, 1500);
