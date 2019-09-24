@@ -42,9 +42,9 @@ const UsersWeb = props => {
           onOk={handleOk}
           onCancel={handleCancel}
         >
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
+          <Text>Some contents...</Text>
+          <Text>Some contents...</Text>
+          <Text>Some contents...</Text>
         </Modal>
     </MainLayout>
   );
