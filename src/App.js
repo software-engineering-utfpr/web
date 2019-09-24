@@ -42,6 +42,8 @@ const App = () => {
           <Route path = "/usuarios-web" exact component = { UsersWeb } />
 
           <Route path = "/configuracoes" exact component = { Settings } />
+
+          <Route path = "/*" component = { Login } />
         </Switch>
       </BrowserRouter>
     </ConfigProvider>
