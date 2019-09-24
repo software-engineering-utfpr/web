@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography } from 'antd';
+import React, { useState } from 'react';
+import { Typography, Button } from 'antd';
 
 import MainLayout from '../../components/layout';
 
@@ -10,7 +10,8 @@ const { Text } = Typography;
 const UsersWeb = props => {
   return (
     <MainLayout page = "web">
-      <Text>oioio</Text>
+      <Text>Users_Web</Text>
+      <Button type = "primary" style = {{ color: "white"}}> New User </Button>
     </MainLayout>
   );
 };
