@@ -9,7 +9,7 @@ const { Text } = Typography;
 
 const Forms = props => {
   return (
-    <MainLayout>
+    <MainLayout page = "formulario">
       <Text>oioio</Text>
     </MainLayout>
   );

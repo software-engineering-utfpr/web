@@ -9,7 +9,7 @@ const { Text } = Typography;
 
 const Primer = props => {
   return (
-    <MainLayout>
+    <MainLayout page = "cartilha">
       <Text>oioio</Text>
     </MainLayout>
   );

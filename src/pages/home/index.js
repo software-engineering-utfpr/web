@@ -9,7 +9,7 @@ const { Text } = Typography;
 
 const Home = props => {
   return (
-    <MainLayout>
+    <MainLayout page = "home">
       <Text>oioio</Text>
     </MainLayout>
   );

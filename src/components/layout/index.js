@@ -12,7 +12,7 @@ const MainLayout = props => {
   return(
     <Layout style = {{ minHeight: '200vh' }}>
       <BackTop style = {{ bottom: 100, right: 70 }} />
-      <NavBar />
+      <NavBar page = { props.page } />
 
       <Layout>
         <Content className = "main-content">

@@ -9,7 +9,7 @@ const { Text } = Typography;
 
 const Games = props => {
   return (
-    <MainLayout>
+    <MainLayout page = "jogos">
       <Text>oioio</Text>
     </MainLayout>
   );

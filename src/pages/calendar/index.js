@@ -9,7 +9,7 @@ const { Text } = Typography;
 
 const Calendar = props => {
   return (
-    <MainLayout>
+    <MainLayout page = "calendario">
       <Text>oioio</Text>
     </MainLayout>
   );

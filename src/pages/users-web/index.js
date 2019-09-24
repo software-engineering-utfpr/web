@@ -7,12 +7,12 @@ import './style.css';
 
 const { Text } = Typography;
 
-const UsersApp = props => {
+const UsersWeb = props => {
   return (
-    <MainLayout>
+    <MainLayout page = "web">
       <Text>oioio</Text>
     </MainLayout>
   );
 };
 
-export default UsersApp;
+export default UsersWeb;

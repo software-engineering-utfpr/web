@@ -54,7 +54,7 @@ const NavBar = props => {
               <img style = {{ height: affixed ? 45 : 55 }} src = {logo} alt = "Logo Rio do Campo Limpo" />
             </Link>
 
-            <Menu className = "header-menu" selectedKeys = {[props.page || 'home']} mode = "horizontal">
+            <Menu className = "header-menu" selectedKeys = {[props.page]} mode = "horizontal">
               <Menu.Item key = "home" style = {{ paddingRight: 0, paddingLeft: 40 }}>
                 <Link to = "/home">
                   <Icon type = "home" style = {{ margin: 0 }} /> &nbsp; Home
@@ -84,9 +84,9 @@ const NavBar = props => {
 
                 <Menu.Item key = "cartilha">
                   <Link to = "/cartilha">
-                      <Icon type = "question-circle" />
-                      <span> Cartilha </span>
-                    </Link>
+                    <Icon type = "question-circle" />
+                    <span> Cartilha </span>
+                  </Link>
                 </Menu.Item>
 
                 <Menu.Item key = "formulario">
