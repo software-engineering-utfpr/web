@@ -25,7 +25,11 @@
     "test:coverage": "npm test -- --coverage"
   },
   "homepage": "https://software-engineering-utfpr.github.io/web/",
-  "proxy": "https://rio-campo-limpo.herokuapp.com/",
+  "proxy": {
+    "/api": {
+      "target": "https://rio-campo-limpo.herokuapp.com/"
+    }
+  },
   "eslintConfig": {
     "extends": "react-app"
   },
