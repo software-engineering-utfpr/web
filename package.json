@@ -32,7 +32,7 @@
   },
   "proxies": {
     "/api/": {
-      "origin": "${API_URL}"
+      "origin": "https://rio-campo-limpo.herokuapp.com/"
     }
   },
   "eslintConfig": {
