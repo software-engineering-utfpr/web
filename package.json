@@ -25,9 +25,14 @@
     "test:coverage": "npm test -- --coverage"
   },
   "homepage": "https://software-engineering-utfpr.github.io/web/",
-  "proxy": {
-    "/api": {
-      "target": "https://rio-campo-limpo.herokuapp.com/"
+  "proxy": "https://rio-campo-limpo.herokuapp.com/",
+  "root": "build/",
+  "routes": {
+    "/**": "index.html"
+  },
+  "proxies": {
+    "/api/": {
+      "origin": "${API_URL}"
     }
   },
   "eslintConfig": {
