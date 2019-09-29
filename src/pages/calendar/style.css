@@ -1,0 +1,9 @@
+.calendar-edit-event:hover {
+  color: #2F80ED;
+  transition: 0.5s;
+}
+
+.calendar-delete-event:hover {
+  color: #FF5154;
+  transition: 0.5s;
+}

@@ -77,16 +77,10 @@ const UsersWeb = props => {
           setConfirmLoading(false);
           setModalCadastro(false);
           error(err);
-<<<<<<< HEAD
         });
       } else {
-          error(err);
-=======
-          });
-      } else {
->>>>>>> ee95c4d9ca00e5d71d43ccf92f8d150440151968
-          setConfirmLoading(false);
-          setModalCadastro(false);
+        setConfirmLoading(false);
+        setModalCadastro(false);
       }
     }).catch((err) => {
       error(err);
