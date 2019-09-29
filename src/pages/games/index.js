@@ -28,6 +28,9 @@ const Games = props => {
   const[modalGameCadastro, setModalGameCadastro] = useState(false);
   const[modalGameUpdate, setModalGameUpdate] = useState(false);
   const[idModal, setIdModal] = useState(false);
+  const[update, setUpdate] = useState({
+    status: ''
+  });
 
   const showGameCadastroModal = () => {
     setModalGameCadastro(true);
@@ -39,10 +42,11 @@ const Games = props => {
     props.form.validateFields(['name', 'link'], (err, values) => {
       if (!err) {
         const { name, link } = values;
-        const image = profilePhoto
+        const image = newProfilePhoto ? profilePhoto : newProfilePhoto
         axios.post('/api/games', { name, link, image }).then(res => {
           setModalGameCadastro(false);
           success();
+          setUpdate({status: 'cadastro realizado'});
         }).catch(err => {
           setModalGameCadastro(false);
           if(err.response && err.response.status === 503) err503();
@@ -74,11 +78,12 @@ const Games = props => {
         const { nameUpdate, linkUpdate } = values;
         const name = nameUpdate;
         const link = linkUpdate;
-        const image = profilePhoto
+        const image = newProfilePhoto ? profilePhoto : newProfilePhoto;
         const id = idModal;
         axios.put('/api/games', { id, name, link, image }).then(res => {
           setModalGameUpdate(false);
           success();
+          setUpdate({status: 'update realizado'});
         }).catch(err => {
           setModalGameUpdate(false);
           if(err.response && err.response.status === 503) err503();
@@ -101,27 +106,31 @@ const Games = props => {
       else if(err.response && err.response.status === 401) err401();
       else errGeneral();
     });
-  }, []);
+  }, [update]);
 
-  // searchByName = (e) => {
-  //   if (e.target.value === '') { this.componentWillMount(); }
+  const searchByName = (e) => {
+    if (e.target.value === '') {
+      setUpdate('procura por nome vazio');
+    }else {
+      axios.get(`/api/games/search/${e.target.value}`).then(res => {
+        const games = res.data;
 
-  //   axios.get(`/api/games/search/${e.target.value}`).then(res => {
-  //     const members = res.data;
+        games.sort((obj1, obj2) => (obj1.status < obj2.status ? -1 : (obj1.status > obj2.status ? 1 : 0)));
 
-  //     members.sort((obj1, obj2) => (obj1.status < obj2.status ? -1 : (obj1.status > obj2.status ? 1 : 0)));
-
-  //     this.setState({ members });
-  //   }).catch(err => {
-  //     console.log(err);
-  //   });
-  // }
+        setData(games);
+      }).catch(err => {
+        if(err.response && err.response.status === 503) err503();
+        else if(err.response && err.response.status === 401) err401();
+        else errGeneral();
+      });
+    }
+    
+  }
 
   const deleteGame = (id) => {
-    console.log("entrei", id);
     axios.delete('/api/games', { id }).then(res => {
-      console.log(res);
       success();
+      setUpdate({status: 'Exclusao realizado'});
     }).catch(err => {
       setModalGameCadastro(false);
       if(err.response && err.response.status === 503) err503();
@@ -168,7 +177,7 @@ const Games = props => {
         <Col span={10}>
           <Search
             placeholder="Pesquise pelo nome do jogo"
-            onChange={e => this.searchByName(e)}
+            onChange={e => searchByName(e)}
             style={{ marginBottom: 18 }}
             size="default"
           />
@@ -240,7 +249,7 @@ const Games = props => {
           ]}
         >
           <Row span = {8} type="flex" justify="center">
-            <Avatar shape = "square" size = {100} src = {profilePhoto} />
+            <Avatar shape = "square" size = {100} src = {newProfilePhoto ? profilePhoto : newProfilePhoto} />
             <Upload beforeUpload = { beforeUploadPhoto } customRequest = { changeProfilePhoto } fileList = { newProfilePhoto } showUploadList = {false} accept = "image/*">
               <Button icon = "plus" type = "primary" style = {{ backgroundColor: '#383A3F', borderColor: '#383A3F', position: 'absolute', bottom: 5, left: 12 }}> Adicionar Imagem </Button>
             </Upload>
@@ -288,7 +297,7 @@ const Games = props => {
         ]}
       >
         <Row span = {8} type="flex" justify="center">
-          <Avatar shape = "square" size = {100} src = {profilePhoto} />
+          <Avatar shape = "square" size = {100} src = {newProfilePhoto ? profilePhoto : newProfilePhoto} />
           <Upload beforeUpload = { beforeUploadPhoto } customRequest = { changeProfilePhoto } fileList = { newProfilePhoto } showUploadList = {false} accept = "image/*">
             <Button icon = "plus" type = "primary" style = {{ backgroundColor: '#383A3F', borderColor: '#383A3F', position: 'absolute', bottom: 5, left: 12 }}> Adicionar Imagem </Button>
           </Upload>
