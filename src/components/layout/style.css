@@ -1,7 +1,6 @@
 .main-content {
   padding: 104px 0 24px;
   background: #FAFCFE;
-  min-height: 100%;
 }
 
 .main-layout-breadcrumb .ant-breadcrumb-separator {
@@ -16,4 +15,20 @@
   height: 4px;
   border-radius: 50%;
   background: #e7e8ef;
+}
+
+.ant-layout-sider-zero-width-trigger {
+  top: 100px;
+}
+
+@media only screen and (max-width: 992px) {
+  .menu-breadcrumb {
+    display: block !important;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+  .mobile-menu {
+    display: none;
+  }
 }

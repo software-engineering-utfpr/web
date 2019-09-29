@@ -111,7 +111,7 @@ const NavBar = props => {
                 overlayClassName = "header-popover-card"
                 placement = "bottomRight"
                 content = {(
-                  <Card style = {{ width: 350 }} bordered = {false}>
+                  <Card className = "card-width" style = {{ width: 350 }} bordered = {false}>
                     <Card.Meta
                       className = "header-card-info"
                       style = {{ padding: '2rem 1rem', background: '#F3F5F9', margin: 0 }}
