@@ -1,5 +1,19 @@
 .main-content {
-  padding: 104px 24px 24px;
-  background: rgb(255, 255, 255);
-  min-height: 280px;
+  padding: 104px 0 24px;
+  background: #FAFCFE;
+  min-height: 100%;
+}
+
+.main-layout-breadcrumb .ant-breadcrumb-separator {
+  vertical-align: sub;
+}
+
+.main-layout-breadcrumb-separator {
+  margin: 0 6px;
+  display: -webkit-inline-box;
+  vertical-align: middle;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #e7e8ef;
 }

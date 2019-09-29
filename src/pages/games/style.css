@@ -1,0 +1,10 @@
+.game-list-item {
+  text-align: center;
+}
+
+.game-list-item .ant-avatar, .game-list-item {
+  height: 125px;
+  width: 100%;
+  max-width: 125px;
+  padding: 10px;
+}

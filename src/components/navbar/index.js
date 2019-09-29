@@ -27,6 +27,7 @@ const NavBar = props => {
     axios.get(`/api/managers/${getID()}`).then(res => {
       setUser(res.data);
     }).catch(err => {
+      setNav('/');
       if(err.response && err.response.status === 503) err503();
       else if(err.response && err.response.status === 401) err401();
       else errGeneral();
