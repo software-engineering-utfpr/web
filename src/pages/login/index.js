@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Row, Button, Card, Input, Icon, Typography, message } from 'antd';
 import { Redirect } from 'react-router-dom';
 
 import axios from 'axios';
 
-import { login } from '../../services/auth';
+import { login, getToken } from '../../services/auth';
 import { error } from '../../services/messages';
 
 import './style.css';
@@ -20,6 +20,10 @@ const Login = props => {
 
   const [loading, setLoading] = useState(false);
   const [nav, setNav] = useState('');
+
+  useEffect(() => {
+    if(getToken()) setNav('/home');
+  }, []);
 
   const handleSubmit = e => {
     e.preventDefault();

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Row, Col, Card, Button, Checkbox, DatePicker, Avatar, Calendar, Popover, Input, Form, Modal, Divider, Icon } from 'antd';
+import { TwitterPicker } from 'react-color';
 
 import axios from 'axios';
 import moment from 'moment';
@@ -51,12 +52,13 @@ const CalendarMainPage = props => {
       name: event.name,
       date: [moment(event.initialDate), moment(event.finalDate)],
       allDay: event.allDay,
-      description: event.description
+      description: event.description,
+      color: { hex: event.color }
     });
   }
 
   const closeCalendarModal = () => {
-    resetFields(['name', 'date', 'allDay', 'description']);
+    resetFields(['name', 'date', 'allDay', 'description', 'color']);
     setCalendarModal({
       ...calendarModal,
       eventID: '',
@@ -108,7 +110,7 @@ const CalendarMainPage = props => {
                         <div style = {{ height: 10 }} />
 
                         <Text>
-                          { item.description ? <Icon type = "align-left" style = {{ marginRight: 5 }} /> : null} { item.description }
+                          { item.description ? <Icon type = "align-left" style = {{ marginRight: 5 }} /> : null } { item.description }
                         </Text>
                       </Col>
                     </Row>
@@ -116,7 +118,7 @@ const CalendarMainPage = props => {
                 )}
               >
                 <Paragraph ellipsis style = {{ fontSize: 11, cursor: 'pointer !important', marginBottom: 0, marginTop: 0 }}>
-                  <Avatar size = {8} style = {{ backgroundColor: moment(item.initialDate).isSame(moment(item.finalDate)) ? '#2F80ED' : '#FF5154', verticalAlign: 'baseline', marginRight: 5 }} />
+                  <Avatar size = {8} style = {{ backgroundColor: item.color, verticalAlign: 'baseline', marginRight: 5 }} />
                   { moment(item.initialDate).isSame(moment(item.finalDate), 'day') ? item.name : `${item.name} (Dia ${(moment(item.finalDate).diff(moment(item.initialDate), 'days')) - moment(item.finalDate).endOf('day').diff(valueFormatted, 'days') + 1} - ${moment(item.finalDate).diff(moment(item.initialDate), 'days') + 1})` }
                 </Paragraph>
               </Popover>
@@ -132,11 +134,11 @@ const CalendarMainPage = props => {
     setCalendarModal({ ...calendarModal, loading: true });
     e.preventDefault();
 
-    validateFields(['name', 'date', 'allDay', 'description'], (err, values) => {
+    validateFields(['name', 'date', 'allDay', 'description', 'color'], (err, values) => {
       if(!err) {
-        const { name, date, allDay, description } = values;
+        const { name, date, allDay, description, color } = values;
 
-        axios.post('/api/events', { name, initialDate: date[0], finalDate: date[1], allDay, description }).then(res => {
+        axios.post('/api/events', { name, initialDate: date[0], finalDate: date[1], allDay, description, color: color.hex }).then(res => {
           setPageUpdate(!pageUpdate);
           closeCalendarModal();
           success();
@@ -154,11 +156,11 @@ const CalendarMainPage = props => {
     setCalendarModal({ ...calendarModal, loading: true });
     e.preventDefault();
 
-    validateFields(['name', 'date', 'allDay', 'description'], (err, values) => {
+    validateFields(['name', 'date', 'allDay', 'description', 'color'], (err, values) => {
       if(!err) {
-        const { name, date, allDay, description } = values;
+        const { name, date, allDay, description, color } = values;
 
-        axios.put('/api/events', { id: calendarModal.eventID, name, initialDate: date[0], finalDate: date[1], allDay, description }).then(res => {
+        axios.put('/api/events', { id: calendarModal.eventID, name, initialDate: date[0], finalDate: date[1], allDay, description, color: color.hex }).then(res => {
           setPageUpdate(!pageUpdate);
           closeCalendarModal();
           success();
@@ -251,12 +253,24 @@ const CalendarMainPage = props => {
             <Checkbox style = {{ marginBottom: 25 }}> Dia Inteiro </Checkbox>
           )}
 
+          <Form.Item label = "Cor">
+            { getFieldDecorator('color', {
+              rules: [{ required: true, message: 'Por favor, insira uma data!' }]
+            })(
+              <TwitterPicker
+                color = { getFieldValue('color') }
+                onChangeComplete = { (color) => setFieldsValue({ color }) }
+                triangle = "hide" colors = {['#FF5154', '#FA8231', '#FFF460', '#00AD45', '#5ECC62', '#2F80ED', '#B3DCFF', '#A55EEA']}
+              />
+            )}
+          </Form.Item>
+
           <Form.Item label = "Descrição">
             { getFieldDecorator('description')(
               <TextArea rows = {4} placeholder = "Descrição" />
             )}
           </Form.Item>
-          
+
           <Row style = {{ textAlign: 'right' }}>
             <Button size = "default" onClick = { closeCalendarModal } style = {{ marginRight: 8 }}> Cancelar </Button>
             <Button loading = { calendarModal.loading } type = "primary" htmlType = "submit" size = "default"> { calendarModal.eventID ? 'Atualizar' : 'Criar' } </Button>

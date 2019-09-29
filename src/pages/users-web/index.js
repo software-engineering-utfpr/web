@@ -149,7 +149,7 @@ const UsersWeb = props => {
   }
 
   return (
-    <MainLayout page = "web" loading = { loadingPage } title = "Gerenciamento de Usuários Web" breadcrumb = {['Gerenciamento', 'Web']}>
+    <MainLayout page = "web" loading = { loadingPage } title = "Gerenciamento de Usuários Web" breadcrumb = {['Gerenciamento', 'Usuários', 'Web']}>
     <Card
         bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}
         title = {
