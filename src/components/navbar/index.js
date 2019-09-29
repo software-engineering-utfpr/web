@@ -5,7 +5,7 @@ import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import { logout, getID } from '../../services/auth';
-import { err503, err401, errGeneral } from '../../services/messages';
+import { error } from '../../services/messages';
 
 import './style.css';
 
@@ -15,22 +15,20 @@ const { Header } = Layout;
 const { Text } = Typography;
 
 const NavBar = props => {
-    const [nav, setNav] = useState('');
-    const [user, setUser] = useState({
-      name: '',
-      image: '',
-      email: ''
-    });
-    const [affixed, setAffixed] = useState(false);
+  const [nav, setNav] = useState('');
+  const [user, setUser] = useState({
+    name: '',
+    image: '',
+    email: ''
+  });
+  const [affixed, setAffixed] = useState(false);
 
   useEffect(() => {
     axios.get(`/api/managers/${getID()}`).then(res => {
       setUser(res.data);
     }).catch(err => {
       setNav('/');
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error();
     });
   }, []);
 
