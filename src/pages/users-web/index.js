@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button, Row, Col, Modal, Input, Form, Icon, List, Avatar, Badge, Popover, Card } from 'antd';
-import { err503, err401, errGeneral, success } from '../../services/messages';
+import { error, success } from '../../services/messages';
 
 // import { Redirect } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ const { Text } = Typography;
 
 const UsersWeb = props => {
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
 
   const[modalCadastro, setModalCadastro] = useState(false);
   const[modalUpdate, setModalUpdate] = useState(false);
@@ -36,9 +36,7 @@ const UsersWeb = props => {
       setLoadingPage(false);
     }).catch((err) => {
       setLoadingPage(false);
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
     });
   },[pageUpdate]); // só re-renderiza se users.length mudar
 
@@ -73,24 +71,17 @@ const UsersWeb = props => {
           setModalCadastro(false);
           cleanInputs();
           setPageUpdate(!pageUpdate);
-        }).catch(() => {
+        }).catch((err) => {
           setConfirmLoading(false);
           setModalCadastro(false);
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
+          error(err);
           });
       } else {
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
           setConfirmLoading(false);
           setModalCadastro(false);
       }
     }).catch((err) => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
       setConfirmLoading(false);
       setModalCadastro(false);
     });
@@ -116,7 +107,7 @@ const UsersWeb = props => {
     setConfirmLoading(true);
     props.form.validateFields(['userNameUpdate', 'emailUpdate', 'passwordUpdate', 'confirmPasswordUpdate'], (err, values) => {
       if (!err) {
-        const { userNameUpdate, emailUpdate, passwordUpdate, } = values;
+        var { userNameUpdate, emailUpdate, passwordUpdate, } = values;
         if(passwordUpdate === ' '){
           passwordUpdate = itemUpdate.password
         }
@@ -130,21 +121,14 @@ const UsersWeb = props => {
         }).catch((err) => {
           setConfirmLoading(false);
           setModalUpdate(false);
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
+          error(err);
           });
       } else {
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
           setConfirmLoading(false);
           setModalUpdate(false);
       }
     }).catch((err) => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
       setConfirmLoading(false);
       setModalUpdate(false);
     });
@@ -186,7 +170,6 @@ const UsersWeb = props => {
   };
 
   function passwordValidator (rule, value, callback) {
-    const { form } = props;
     if (value.length < 6) {
       callback('digitos minimos: 6');
     }
@@ -194,8 +177,7 @@ const UsersWeb = props => {
   };
 
   function passwordValidatorUpdate (rule, value, callback) {
-    const { form } = props;
-    if(value != ''){
+    if(value !== '') {
       if (value.length < 6) {
         callback('digitos minimos: 6');
       }
@@ -211,9 +193,7 @@ const UsersWeb = props => {
       success();
       setPageUpdate(!pageUpdate);
     }).catch(err => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
     });
   }
 
@@ -226,9 +206,7 @@ const UsersWeb = props => {
       setPageUpdate(!pageUpdate);
     }).catch((err) => {
       setConfirmLoading(false);
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
       });
   }
 
@@ -281,7 +259,7 @@ const UsersWeb = props => {
                           style = {{ color: "red" }}  />
                     </Popover>,
                     <Popover content = "!Superuser">
-                      <Button onCLick ={() => changePriority(item)} > !Superuser </Button>
+                      <Button onClick ={() => changePriority(item)} > !Superuser </Button>
                     </Popover>
                   ]}
                 >

@@ -39,7 +39,7 @@ const Login = props => {
         }).catch(err => {
           setLoading(false);
 
-          error();
+          error(err);
         });
       } else setLoading(false);
     });

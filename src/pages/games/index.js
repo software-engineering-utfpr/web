@@ -35,7 +35,7 @@ const Games = props => {
 
     }).catch((err) => {
       setLoadingPage(false);
-      error();
+      error(err);
     });
   }, [pageUpdate]);
 
@@ -96,7 +96,7 @@ const Games = props => {
             success();
           }).catch(err => {
             closeModals();
-            error();
+            error(err);
           });
         });
       } else {
@@ -119,7 +119,7 @@ const Games = props => {
             success();
           }).catch(err => {
             closeModals();
-            error();
+            error(err);
           });
         });
       } else {
@@ -133,7 +133,7 @@ const Games = props => {
       success();
       setPageUpdate(!pageUpdate);
     }).catch(err => {
-      error();
+      error(err);
     });
   }
 
