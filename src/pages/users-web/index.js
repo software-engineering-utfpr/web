@@ -79,8 +79,9 @@ const UsersWeb = props => {
           error(err);
         });
       } else {
-        setConfirmLoading(false);
-        setModalCadastro(false);
+          error(err);
+          setConfirmLoading(false);
+          setModalCadastro(false);
       }
     }).catch((err) => {
       error(err);
@@ -194,7 +195,6 @@ const UsersWeb = props => {
   function changePriority (item) {
     setConfirmLoading(true);
     const superuser = !item.superuser;
-    console.log(item.superuser, superuser);
     axios.put('/api/managers/', { id: item._id , superuser  }).then(() => {
       success();
       setConfirmLoading(false);
@@ -250,7 +250,7 @@ const UsersWeb = props => {
                   actions={
                     isAdmin() === 'true' ? ([
                     <Popover content = "editar usuário">
-                      <Icon type="edit" onClick = {() => changePriority(item)} />
+                      <Icon type="edit" onClick = {() => showUpdateModal(item)} />
                     </Popover>,
                     <Popover content = "deletar usuário">
                       <Icon type="delete"
@@ -265,10 +265,14 @@ const UsersWeb = props => {
                               onCancel() {}
                             });
                           }}
-                          style = {{ color: "red" }}  />
+                          style = {{ color: "#FF5154" }}  />
                     </Popover>,
-                    <Popover content = "!Superuser">
-                      <Button onClick = {() => changePriority(item)} > !Superuser </Button>
+                    item.superuser === false ?
+                    <Popover content = "Tornar Administrador">
+                      <Button style = {{ color: "#00AD45" }} onClick = {() => changePriority(item)} > Administrador </Button>
+                    </Popover> : 
+                    <Popover content = "Retirar Administração">
+                      <Button type = "danger" style = {{ backgroundColor: "white", color: "#FF5154" }} onClick = {() => changePriority(item)} > Administrador </Button>
                     </Popover>
                     ]) : ([])
                   }
@@ -276,7 +280,7 @@ const UsersWeb = props => {
                   <List.Item.Meta
                     avatar={
                       item.superuser ? 
-                      <Badge count={<Popover content={"Esse é um administrador"}> <Icon type = "star" style = {{ color: 'yellow' }}/> </Popover>}>
+                      <Badge count={<Popover content={"Esse é um administrador"}> <Icon type = "star" theme = "filled" style = {{ color: "#2F80ED" }}/> </Popover>}>
                         <Avatar shape="square" size={64} src={item.image} />
                       </Badge> :
                       <Avatar shape="square" size={64} src={item.image} />
