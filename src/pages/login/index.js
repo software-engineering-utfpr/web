@@ -68,7 +68,7 @@ const Login = props => {
                 ]
               })(
                 <Input
-                  prefix = {<Icon type = "user" style = {{ color: 'rgba(0,0,0,.25)' }} />}
+                  prefix = {<Icon type = "user" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
                   placeholder = "nome@exemplo.com" size = "large" style = {{ fontSize: 13 }}
                 />
               )}

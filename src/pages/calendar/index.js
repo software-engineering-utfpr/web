@@ -39,7 +39,7 @@ const CalendarMainPage = props => {
     });
   }, [pageUpdate]);
 
-  const searchByName = (e) => setEventsFiltered(events.filter(r => r.name.toLowerCase().includes(e.target.value.toLowerCase()) || (r.description && r.description.toLowerCase().includes(e.target.value.toLowerCase()))));
+  const searchEvents = (e) => setEventsFiltered(events.filter(r => r.name.toLowerCase().includes(e.target.value.toLowerCase()) || (r.description && r.description.toLowerCase().includes(e.target.value.toLowerCase()))));
 
   const openNewCalendarModal = () => {
     setCalendarModal({ ...calendarModal, eventID: '', visibility: true });
@@ -204,7 +204,7 @@ const CalendarMainPage = props => {
           <Col span = {14}>
             <Search
               placeholder = "Pesquise por nome ou descrição do evento"
-              onChange = { e => searchByName(e) }
+              onChange = { e => searchEvents(e) }
               size = "default"
             />
           </Col>

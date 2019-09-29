@@ -1,38 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { Typography, Button, Row, Col, Modal, Input, Form, Icon, List, Avatar, Badge, Popover, Card } from 'antd';
+import { Typography, Button, Row, Col, Modal, Input, Form, Icon, List, Dropdown, Menu, Divider, Avatar, Badge, Popover, Card } from 'antd';
 import { error, success } from '../../services/messages';
-
-// import { Redirect } from 'react-router-dom';
 
 import axios from 'axios';
 
+import { isAdmin, getID } from '../../services/auth' ;
 import MainLayout from '../../components/layout';
 
 import './style.css';
 
-import { isAdmin } from '../../services/auth' ;
-
 const { Search } = Input;
-
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 const UsersWeb = props => {
+  const { getFieldDecorator, setFieldsValue, resetFields, getFieldValue, validateFields } = props.form;
 
-  const { getFieldDecorator, setFieldsValue } = props.form;
-
-  const[modalCadastro, setModalCadastro] = useState(false);
-  const[modalUpdate, setModalUpdate] = useState(false);
-  const[managers, setManagers] = useState([{}]);
-  const[managersFiltered, setManagersFiltered] = useState([{}])
-  const[confirmLoading, setConfirmLoading] = useState(false);
-  const[loadingPage, setLoadingPage] = useState(true);
-  const[itemUpdate, setItemUpdate] = useState({});
-  const[pageUpdate, setPageUpdate] = useState(false);
+  const [loadingPage, setLoadingPage] = useState(true);
+  const [managers, setManagers] = useState([]);
+  const [managersFiltered, setManagersFiltered] = useState([]);
+  const [adminModal, setAdminModal] = useState({
+    adminID: '',
+    loading: false,
+    visibility: false
+  });
+  const [pageUpdate, setPageUpdate] = useState(false);
 
   useEffect(() => {
     setLoadingPage(true);
     axios.get('/api/managers/').then(res => {
-      // const Users = res.data;
       setManagers(res.data);
       setManagersFiltered(res.data);
       setLoadingPage(false);
@@ -40,170 +35,109 @@ const UsersWeb = props => {
       setLoadingPage(false);
       error(err);
     });
-  },[pageUpdate]); // só re-renderiza se users.length mudar
+  }, [pageUpdate]);
+  
+  const searchAdmins = (e) => setManagersFiltered(managers.filter(r => r.name.toLowerCase().includes(e.target.value.toLowerCase()) || r.email.toLowerCase().includes(e.target.value.toLowerCase())));
 
-  function cleanInputs(){
-    const form = props.form;
-    form.setFieldsValue({ userName: ''});
-    form.setFieldsValue({ email: ''});
-    form.setFieldsValue({ password: ''});
-    form.setFieldsValue({ confirmPassword: ''});
-    form.setFieldsValue({ userNameUpdate: ''});
-    form.setFieldsValue({ emailUpdate: ''});
-    form.setFieldsValue({ passwordUpdate: ''});
-    form.setFieldsValue({ confirmPasswordUpdate: ''});
-
+  const openNewAdminModal = () => {
+    setAdminModal({ ...adminModal, adminID: '', visibility: true });
   }
 
-  // Modal functions ------------------------------------------------------------------------
-  const showCadastroModal = () => {
-    setModalCadastro(true);
-  };
+  const openUpdateAdminModel = (admin) => {
+    setAdminModal({ ...adminModal, visibility: true, adminID: admin._id });
+    setFieldsValue({
+      name: admin.name,
+      email: admin.email
+    });
+  }
 
-  const handleCadastroOk = e => {
-    setConfirmLoading(true);
-    props.form.validateFields(['userName', 'email', 'password', 'confirmPassword'], (err, values) => {
-      if (!err) {
-        const { userName, email, password, } = values;
-        const name = userName;
+  const closeAdminModal = () => {
+    resetFields(['name', 'email', 'password', 'confirmPassword']);
+    setAdminModal({
+      ...adminModal,
+      adminID: '',
+      loading: false,
+      visibility: false
+    });
+  }
+
+  const emailValidation = (rule, value, callback) => {
+    if((value && managers[managers.map((e) => e.email).indexOf(value)] && !adminModal.adminID) ||
+    (value && adminModal.adminID && managers[managers.map((e) => e.email).indexOf(value)] && managers[managers.map((e) => e._id).indexOf(adminModal.adminID)].email !== value)) {
+      callback('Email já Cadastrado!');
+    } else {
+      callback();
+    }
+  }
+
+  const validateToNextPassword = (rule, value, callback) => {
+    if (value && getFieldValue('confirmPassword')) {
+      validateFields(['confirmPassword'], { force: true });
+    }
+    callback();
+  }
+
+  const compareToFirstPassword = (rule, value, callback) => {
+    if(value && value !== getFieldValue('password')) {
+      callback('Senhas Incompatíveis!');
+    } else {
+      callback();
+    }
+  }
+
+  const handleNewAdmin = e => {
+    setAdminModal({ ...adminModal, loading: true });
+    e.preventDefault();
+
+    props.form.validateFields(['name', 'email', 'password', 'confirmPassword'], (err, values) => {
+      if(!err) {
+        const { name, email, password } = values;
 
         axios.post('/api/managers/', { email, name, password }).then(() => {
-          success();
-          setConfirmLoading(false);
-          setModalCadastro(false);
-          cleanInputs();
           setPageUpdate(!pageUpdate);
+          closeAdminModal();
+          success();
         }).catch((err) => {
-          setConfirmLoading(false);
-          setModalCadastro(false);
+          closeAdminModal();
           error(err);
         });
       } else {
-          error(err);
-          setConfirmLoading(false);
-          setModalCadastro(false);
+        setAdminModal({ ...adminModal, loading: false });
       }
-    }).catch((err) => {
-      error(err);
-      setConfirmLoading(false);
-      setModalCadastro(false);
     });
-    setConfirmLoading(false);
-    setModalCadastro(false);
-  };
-
-  const handleCadastroCancel = e => {
-    setModalCadastro(false);
-    setConfirmLoading(false);
-  };
-
-  const showUpdateModal = (item) => {
-    setFieldsValue({
-      userNameUpdate: item.name,
-      emailUpdate: item.email,
-    });
-    setItemUpdate(item);
-    setModalUpdate(true);
-  };
-
-  const handleUpdateOk = e => {
-    setConfirmLoading(true);
-    props.form.validateFields(['userNameUpdate', 'emailUpdate', 'passwordUpdate', 'confirmPasswordUpdate'], (err, values) => {
-      if (!err) {
-        var { userNameUpdate, emailUpdate, passwordUpdate, } = values;
-        if(passwordUpdate === ' '){
-          passwordUpdate = itemUpdate.password
-        }
-        axios.put('/api/managers/', { id: itemUpdate._id ,email: emailUpdate, name: userNameUpdate, password: passwordUpdate, superuser: itemUpdate.superuser, image: itemUpdate.image }).then(() => {
-          success();
-          setConfirmLoading(false);
-          setModalUpdate(false);
-          cleanInputs();
-          setPageUpdate(!pageUpdate);
-
-        }).catch((err) => {
-          setConfirmLoading(false);
-          setModalUpdate(false);
-          error(err);
-        });
-      } else {
-          error(err);
-          setConfirmLoading(false);
-          setModalUpdate(false);
-      }
-    }).catch((err) => {
-      error(err);
-      setConfirmLoading(false);
-      setModalUpdate(false);
-    });
-    setConfirmLoading(false);
-    setModalUpdate(false);
-  };
-
-  const handleUpdateCancel = e => {
-    setModalUpdate(false);
-    setConfirmLoading(false);
-  };
-  // End Modal Functions ------------------------------------------------------------------------
-
-  // validators ------------------------------------------------------------------------
-  function usernameValidation (rule, value, callback) {
-    if (managers[managers.map((e) => e.name).indexOf(value)]) {
-      callback('Username já Cadastrado!');
-    } else {
-      callback();
-    }
   }
 
-  function compareToFirstPassword (rule, value, callback) {
-    const { form } = props;
-    if (value && value !== form.getFieldValue('password')) {
-      callback('senha de confirmação incompativel!');
-    } else {
-      callback();
-    }
-  };
+  const handleEditAdmin = e => {
+    setAdminModal({ ...adminModal, loading: true });
+    e.preventDefault();
 
-  function compareToFirstPasswordUpdate (rule, value, callback) {
-    const { form } = props;
-    if (value && value !== form.getFieldValue('passwordUpdate')) {
-      callback('senha de confirmação incompativel!');
-    } else {
-      callback();
-    }
-  };
+    props.form.validateFields(['name', 'email'], (err, values) => {
+      if(!err) {
+        const { name, email, password } = values;
 
-  function passwordValidator (rule, value, callback) {
-    if (value.length < 6) {
-      callback('digitos minimos: 6');
-    }
-    callback();
-  };
-
-  function passwordValidatorUpdate (rule, value, callback) {
-    if(value !== '') {
-      if (value.length < 6) {
-        callback('digitos minimos: 6');
+        axios.put('/api/managers/', { id: adminModal.adminID, email, name, superuser: '', password }).then(() => {
+          setPageUpdate(!pageUpdate);
+          closeAdminModal();
+          success();
+        }).catch((err) => {
+          closeAdminModal();
+          error(err);
+        });
+      } else {
+        setAdminModal({ ...adminModal, loading: false });
       }
-    }
-    callback();
-  };
-  // End validators ------------------------------------------------------------------------
+    });
+  }
 
-  const searchByName = (e) => setManagersFiltered(managers.filter(r => r.name.toLowerCase().includes(e.target.value.toLowerCase())));
-
-  function changePriority (item) {
-    setConfirmLoading(true);
+  const changePriority = (item) => {
     const superuser = !item.superuser;
-    axios.put('/api/managers/', { id: item._id , superuser  }).then(() => {
+    axios.put('/api/managers/', { id: item._id , superuser }).then(() => {
       success();
-      setConfirmLoading(false);
       setPageUpdate(!pageUpdate);
     }).catch((err) => {
-      setConfirmLoading(false);
       error(err);
-      });
-  };
+    });
+  }
 
   const deleteManager = (id) => {
     axios.delete(`/api/managers/${id}`).then(res => {
@@ -215,211 +149,176 @@ const UsersWeb = props => {
   }
 
   return (
-    <MainLayout page = "web" loading = {loadingPage} title = "Gerenciamento de Usuários Web" breadcrumb = {['Gerenciamento', 'Web']}>
-     <Card
+    <MainLayout page = "web" loading = { loadingPage } title = "Gerenciamento de Usuários Web" breadcrumb = {['Gerenciamento', 'Web']}>
+    <Card
         bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}
         title = {
           <>
-            <Icon type = "container" style = {{ marginRight: 6, color: '#00AD45' }} /> Usuários cadastrados
+            <Icon type = "container" style = {{ marginRight: 6, color: '#00AD45' }} /> Usuários Cadastrados
           </>
         }
         extra = {
           isAdmin() === 'true' ? (
-            <Button type = "primary" style = {{ color: "white"}} onClick = {showCadastroModal} > Adicionar Usuário </Button>
+            <Button type = "primary" icon = "plus" onClick = { openNewAdminModal } > Adicionar Usuário </Button>
           ) : null
         }
       >
         <Row gutter = {24} type = "flex" justify = "end" style = {{ marginBottom: 18 }}>
-          <Col span = {10}>
+          <Col span = {14}>
             <Search
-              placeholder = "Pesquise por nome"
-              onChange = { e => searchByName(e) }
+              placeholder = "Pesquise por nome ou email"
+              onChange = { e => searchAdmins(e) }
               size = "default"
             />
           </Col>
         </Row>
-        <Row>
-          <Col span = {22} type = "flex" justify = "center">
-            <List
-              itemLayout="vertical"
-              size="large"
-              dataSource = { managersFiltered }
-              renderItem = {(item) => (
-                <List.Item
-                  key={item.Name}
-                  actions={
-                    isAdmin() === 'true' ? ([
-                    <Popover content = "editar usuário">
-                      <Icon type="edit" onClick = {() => showUpdateModal(item)} />
-                    </Popover>,
-                    <Popover content = "deletar usuário">
-                      <Icon type="delete"
+
+        <List
+          itemLayout = "vertical"
+          size = "large"
+          dataSource = { managersFiltered }
+          renderItem = {(item) => (
+            <List.Item key = { item._id }>
+              <Row>
+                { item._id !== getID() ? (
+                  <Button.Group style = {{ fontSize: 17, position: 'absolute', right: 0, top: 0 }}>
+                    { item.superuser === false ? (
+                      <Popover placement = "left" content = "Tornar Administrador">
+                        <Button style = {{ backgroundColor: '#FFFFFF', color: '#5ECC62', borderColor: '#5ECC62' }} size = "small" onClick = { () => changePriority(item) } icon = "vertical-align-top" />
+                      </Popover>
+                    ) : ( 
+                      <Popover placement = "left" content = "Retirar Administração">
+                        <Button style = {{ backgroundColor: '#FFFFFF', color: '#FF5154', borderColor: '#FF5154' }} size = "small" onClick = { () => changePriority(item) } icon = "vertical-align-bottom" />
+                      </Popover>
+                    )}
+
+                    <Dropdown
+                      overlay = {(
+                        <Menu>
+                          <Menu.Item onClick = { () => openUpdateAdminModel(item) }> <Icon type = "edit" /> Editar </Menu.Item>
+                          
+                          <Menu.Item
                             onClick = { () => {
-                            Modal.confirm({
-                              title: 'Deseja realmente apagar este Usuário?',
-                              content: 'Esta ação é permanente, não haverá forma de restaurar ação.',
-                              okType: 'danger',
-                              onOk() {
-                                deleteManager(item._id)
-                              },
-                              onCancel() {}
-                            });
-                          }}
-                          style = {{ color: "#FF5154" }}  />
-                    </Popover>,
-                    item.superuser === false ?
-                    <Popover content = "Tornar Administrador">
-                      <Button style = {{ color: "#00AD45" }} onClick = {() => changePriority(item)} > Administrador </Button>
-                    </Popover> : 
-                    <Popover content = "Retirar Administração">
-                      <Button type = "danger" style = {{ backgroundColor: "white", color: "#FF5154" }} onClick = {() => changePriority(item)} > Administrador </Button>
-                    </Popover>
-                    ]) : ([])
-                  }
-                >
-                  <List.Item.Meta
-                    avatar={
-                      item.superuser ? 
-                      <Badge count={<Popover content={"Esse é um administrador"}> <Icon type = "star" theme = "filled" style = {{ color: "#2F80ED" }}/> </Popover>}>
-                        <Avatar shape="square" size={64} src={item.image} />
-                      </Badge> :
-                      <Avatar shape="square" size={64} src={item.image} />
-                    }
-                    
-                      title={<Text>{item.name}</Text>}
-                    description={item.email}
-                  />
-                </List.Item>
-              )}
-            />
-          </Col>
-        </Row>
+                              Modal.confirm({
+                                title: 'Deseja realmente apagar este usuário?',
+                                content: 'Esta ação é permanente, não haverá forma de restaurar ação.',
+                                okType: 'danger',
+                                onOk() {
+                                  deleteManager(item._id)
+                                },
+                                onCancel() {}
+                              });
+                            }}
+                          >
+                            <Icon type = "delete" /> Excluir
+                          </Menu.Item>
+                        </Menu>
+                      )}
+                      placement = "bottomRight"
+                    >
+                      <Button size = "small" style = {{ backgroundColor: '#FFFFFF', color: '#2D2E2E', borderColor: '#2D2E2E65' }} icon = "more" />
+                    </Dropdown>
+                  </Button.Group>
+                ) : null }
+              </Row>
+
+              <List.Item.Meta
+                style = {{ marginBottom: 0 }}
+                className = "card-list-users-web"
+                avatar = {
+                  item.superuser ? (
+                    <Badge count = {<Popover placement = "right" content = "Administrador"> <Icon type = "star" theme = "filled" style = {{ color: '#FFFFFF', background: '#2F80ED', borderRadius: '50%', padding: 5 }}/> </Popover>}>
+                      <Avatar shape = "square" size = {80} src = { item.image } />
+                    </Badge>
+                  ) : (
+                    <Avatar shape = "square" size = {80} src = { item.image } />
+                  )
+                }
+                title = {<Text strong> { item.name } </Text>}
+                description = {<Text type = "secondary" ellipsis style = {{ width: '100%' }}> { item.email } </Text>}
+              />
+            </List.Item>
+          )}
+        />
       </Card>
-      <Modal
-          title="Adicionar Usuário"
-          visible={modalCadastro}
-          onOk={handleCadastroOk}
-          onCancel={handleCadastroCancel}
-          confirmLoading={confirmLoading}
-        >
-          <Row style = {{ textAlign : "center" }}>
-            <Col span = {18} offset = {3}>
-              <Form layout = "vertical">
-                <Form.Item>
-                  {getFieldDecorator('userName', {
-                    // initialValue : ' ',
-                    rules: [{ required: true, message: 'Please input your username!' },
-                    {validator: usernameValidation}
-                    ],
-                  })(
-                    <Input
-                      prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Nome do Usuário"
-                    />,
-                  )}
-                </Form.Item>
-                <Form.Item>
-                  {getFieldDecorator('email', {
-                    // initialValue : ' '  ,
-                    rules: [{type: 'email', message: 'Email Inválido'},
-                      { required: true, message: 'Please input your email!' },
-                    ],
-                  })(
-                    <Input
-                      prefix={<Icon type="google" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="E-mail"
-                    />,
-                  )}
-                </Form.Item>
-                <Form.Item>
-                  {getFieldDecorator('password', {
-                    // initialValue : ' ',
-                    rules: [{ required: true, message: 'Please input your password!' },
-                    {validator: passwordValidator }
-                    ],
-                  })(
-                    <Input.Password
-                      prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Senha"
-                    />,
-                  )}
-                </Form.Item>
-                <Form.Item>
-                  {getFieldDecorator('confirmPassword', {
-                    // initialValue : ' ',
-                    rules: [{ required: true, message: 'Please input your confirmPassword!' },
-                    {validator: compareToFirstPassword },
-                  ],
+
+      <Modal visible = { adminModal.visibility } onCancel = { closeAdminModal } footer = { null }>
+        <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> { adminModal.adminID ? 'Editar Usuário' : 'Novo Usuário' } </Paragraph>
+
+        <Divider style = {{ fontSize: 20, minWidth: '60%', width: '60%', marginTop: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+          <Icon type = { adminModal.adminID ? 'edit' : 'plus' } />
+        </Divider>
+
+        <Form onSubmit = { adminModal.adminID ? handleEditAdmin : handleNewAdmin }>
+          <Form.Item label = "Nome">
+            { getFieldDecorator('name', {
+              rules: [{ required: true, message: 'Por favor, insira um nome!' }]
+            })(
+              <Input
+                prefix = {<Icon type = "user" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
+                placeholder = "Seu Nome"
+              />
+            )}
+          </Form.Item>
+
+          <Form.Item label = "Email">
+            { getFieldDecorator('email', {
+              rules: [
+                { required: true, message: 'Por favor, digite um email!' },
+                { type: 'email', message: 'Por favor, digite um email válido!' },
+                { validator: emailValidation }
+              ]
+            })(
+              <Input
+                prefix = {<Icon type = "mail" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
+                placeholder = "nome@exemplo.com" style = {{ fontSize: 13 }}
+              />
+            )}
+          </Form.Item>
+
+          { !adminModal.adminID ? (
+            <Row gutter = {16}>
+              <Col span = {12}>
+                <Form.Item label = "Senha">
+                  { getFieldDecorator('password', {
+                    rules: [
+                      { required: true, message: 'Por favor, insira uma senha!' },
+                      { min: 8, message: 'Por favor, insira uma senha maior que 7!' },
+                      { validator: validateToNextPassword }
+                    ]
                   })(
                     <Input.Password
-                      prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                      placeholder="Confirmação de senha"
-                    />,
+                      prefix = {<Icon type = "lock" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
+                      placeholder = "senha" style = {{ fontSize: 13 }}
+                    />
                   )}
                 </Form.Item>
-              </Form>
-            </Col>
-          </Row> 
-        </Modal>
-      <Modal
-        title="Adicionar Usuário"
-        visible={modalUpdate}
-        onOk={handleUpdateOk}
-        onCancel={handleUpdateCancel}
-        confirmLoading={confirmLoading}
-      >
-        <Row style = {{ textAlign : "center" }}>
-          <Col span = {18} offset = {3}>
-            <Form layout = "vertical">
-              <Form.Item>
-                {getFieldDecorator('userNameUpdate', {
-                  // initialValue : ' ',
-                  rules: [{ required: true, message: 'Please input your username!' }],
-                })(
-                  <Input
-                    prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    placeholder="Nome do Usuário"
-                  />,
-                )}
-              </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('emailUpdate', {
-                  // initialValue : ' '  ,
-                  rules: [{type: 'email', message: 'Email Inválido'},
-                    { required: true, message: 'Please input your email!' },
-                  ],
-                })(
-                  <Input
-                    prefix={<Icon type="google" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    placeholder="E-mail"
-                  />,
-                )}
-              </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('passwordUpdate', {
-                  initialValue : '',
-                  rules: [{validator: passwordValidatorUpdate }],
-                })(
-                  <Input.Password
-                    prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    placeholder="Senha"
-                  />,
-                )}
-              </Form.Item>
-              <Form.Item>
-                {getFieldDecorator('confirmPasswordUpdate', {
-                  initialValue : '',
-                  rules: [{validator: compareToFirstPasswordUpdate }],
-                })(
-                  <Input.Password
-                    prefix={<Icon type="unlock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    placeholder="Confirmação de senha"
-                  />,
-                )}
-              </Form.Item>
-            </Form>
-          </Col>
-        </Row> 
+              </Col>
+
+              <Col span = {12}>
+                <Form.Item label = "Confirmar Senha">
+                  { getFieldDecorator('confirmPassword', {
+                    rules: [
+                      { required: !adminModal.adminID, message: 'Por favor, confirme sua senha!' },
+                      { min: adminModal.adminID ? 0 : 8, message: 'Por favor, insira uma senha maior que 7!' },
+                      { validator: compareToFirstPassword }
+                    ]
+                  })(
+                    <Input.Password
+                      prefix = {<Icon type = "lock" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
+                      placeholder = "senha" style = {{ fontSize: 13 }}
+                    />
+                  )}
+                </Form.Item>
+              </Col>
+            </Row>
+          ) : null }
+
+          <Row style = {{ textAlign: 'right' }}>
+            <Button size = "default" onClick = { closeAdminModal } style = {{ marginRight: 8 }}> Cancelar </Button>
+            <Button loading = { adminModal.loading } type = "primary" htmlType = "submit" size = "default"> { adminModal.adminID ? 'Atualizar' : 'Criar' } </Button>
+          </Row>
+        </Form>
       </Modal>
     </MainLayout>
   );
