@@ -28,7 +28,7 @@ const NavBar = props => {
       setUser(res.data);
     }).catch(err => {
       setNav('/');
-      error();
+      error(err);
     });
   }, []);
 

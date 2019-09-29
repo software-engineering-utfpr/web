@@ -18,7 +18,7 @@ const { Text } = Typography;
 
 const UsersWeb = props => {
 
-  const { getFieldDecorator, setFieldsValue, getFieldValue } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
 
   const[modalCadastro, setModalCadastro] = useState(false);
   const[modalUpdate, setModalUpdate] = useState(false);
@@ -77,9 +77,14 @@ const UsersWeb = props => {
           setConfirmLoading(false);
           setModalCadastro(false);
           error(err);
+<<<<<<< HEAD
         });
       } else {
           error(err);
+=======
+          });
+      } else {
+>>>>>>> ee95c4d9ca00e5d71d43ccf92f8d150440151968
           setConfirmLoading(false);
           setModalCadastro(false);
       }
@@ -110,7 +115,7 @@ const UsersWeb = props => {
     setConfirmLoading(true);
     props.form.validateFields(['userNameUpdate', 'emailUpdate', 'passwordUpdate', 'confirmPasswordUpdate'], (err, values) => {
       if (!err) {
-        const { userNameUpdate, emailUpdate, passwordUpdate, } = values;
+        var { userNameUpdate, emailUpdate, passwordUpdate, } = values;
         if(passwordUpdate === ' '){
           passwordUpdate = itemUpdate.password
         }
@@ -174,7 +179,6 @@ const UsersWeb = props => {
   };
 
   function passwordValidator (rule, value, callback) {
-    const { form } = props;
     if (value.length < 6) {
       callback('digitos minimos: 6');
     }
@@ -182,8 +186,7 @@ const UsersWeb = props => {
   };
 
   function passwordValidatorUpdate (rule, value, callback) {
-    const { form } = props;
-    if(value != ''){
+    if(value !== '') {
       if (value.length < 6) {
         callback('digitos minimos: 6');
       }

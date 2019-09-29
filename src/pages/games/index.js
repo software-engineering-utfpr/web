@@ -35,7 +35,7 @@ const Games = props => {
 
     }).catch((err) => {
       setLoadingPage(false);
-      error();
+      error(err);
     });
   }, [pageUpdate]);
 
@@ -50,7 +50,7 @@ const Games = props => {
     setFieldsValue({ game: game.appId });
   }
 
-  const closeModals = () => {
+  const closeGameModal = () => {
     resetFields(['game']);
     setGameModal({
       ...gameModal,
@@ -92,11 +92,11 @@ const Games = props => {
           const { title, appId, developer, url, scoreText, icon } = res.data;
           axios.post('/api/games', { appId, name: title, link: url, image: icon, developer, score: scoreText }).then(res => {
             setPageUpdate(!pageUpdate);
-            closeModals();
+            closeGameModal();
             success();
           }).catch(err => {
-            closeModals();
-            error();
+            closeGameModal();
+            error(err);
           });
         });
       } else {
@@ -115,25 +115,25 @@ const Games = props => {
           const { title, appId, developer, url, scoreText, icon } = res.data;
           axios.put('/api/games', { id: gameModal.gameID, appId, name: title, link: url, image: icon, developer, score: scoreText }).then(res => {
             setPageUpdate(!pageUpdate);
-            closeModals();
+            closeGameModal();
             success();
           }).catch(err => {
-            closeModals();
-            error();
+            closeGameModal();
+            error(err);
           });
         });
       } else {
         setGameModal({ ...gameModal, loading: true });
       }
     });
-  };
+  }
 
   const deleteGame = (id) => {
     axios.delete(`/api/games/${id}`).then(res => {
       success();
       setPageUpdate(!pageUpdate);
     }).catch(err => {
-      error();
+      error(err);
     });
   }
 
@@ -207,7 +207,7 @@ const Games = props => {
         />
       </Card>
 
-      <Modal visible = { gameModal.visibility } onCancel = { closeModals } footer = { null }>
+      <Modal visible = { gameModal.visibility } onCancel = { closeGameModal } footer = { null }>
         <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> { gameModal.gameID ? 'Editar Jogo' : 'Novo Jogo' } </Paragraph>
 
         <Divider style = {{ fontSize: 20, minWidth: '60%', width: '60%', marginTop: 0, marginLeft: 'auto', marginRight: 'auto' }}>
@@ -223,10 +223,9 @@ const Games = props => {
               ]
             })(
               <Select
-                style = {{ width: '100%', fontSize: 13 }} showArrow = {false}
                 notFoundContent = { gameModal.fetching ? <Spin size = "small" /> : undefined }
                 onSearch = { getGooglePlayGames } onChange = { () => setGameModal({ ...gameModal, fetching: false }) }
-                showSearch placeholder = "Procure Aplicativo pelo Nome" size = "large" filterOption = { filteredOptions }
+                showSearch placeholder = "Procure Aplicativo pelo Nome" filterOption = { filteredOptions } showArrow = {false}
               >
                 { gameModal.games.map(game => (
                   <Select.Option key = { game.title } value = { game.appId }>
@@ -237,9 +236,9 @@ const Games = props => {
               </Select>
             )}
           </Form.Item>
-          
+
           <Row style = {{ textAlign: 'right' }}>
-            <Button size = "default" onClick = { closeModals } style = {{ marginRight: 8 }}> Cancelar </Button>
+            <Button size = "default" onClick = { closeGameModal } style = {{ marginRight: 8 }}> Cancelar </Button>
             <Button loading = { gameModal.loading } type = "primary" htmlType = "submit" size = "default"> { gameModal.gameID ? 'Atualizar' : 'Criar' } </Button>
           </Row>
         </Form>
