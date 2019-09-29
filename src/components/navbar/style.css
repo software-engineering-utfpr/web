@@ -153,4 +153,20 @@ header.haccoon-header-affixed {
   .header-content div.text-center {
     text-align: left !important;
   }
+
+  .header-content {
+    padding: 0 30px;
+  }
+}
+
+@media only screen and (max-width: 430px) {
+  .card-width {
+    width: 250px !important;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .header-menu {
+    display: none;
+  }
 }

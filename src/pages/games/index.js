@@ -3,7 +3,7 @@ import { Typography, List, Col, Row, Card, Icon, Input, Select, Spin, Button, Mo
 
 import axios from 'axios';
 import MainLayout from '../../components/layout';
-import { err503, err401, errGeneral, success } from '../../services/messages';
+import { error, success } from '../../services/messages';
 
 import './style.css';
 
@@ -35,9 +35,7 @@ const Games = props => {
 
     }).catch((err) => {
       setLoadingPage(false);
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error();
     });
   }, [pageUpdate]);
 
@@ -98,9 +96,7 @@ const Games = props => {
             success();
           }).catch(err => {
             closeModals();
-            if(err.response && err.response.status === 503) err503();
-            else if(err.response && err.response.status === 401) err401();
-            else errGeneral();
+            error();
           });
         });
       } else {
@@ -123,9 +119,7 @@ const Games = props => {
             success();
           }).catch(err => {
             closeModals();
-            if(err.response && err.response.status === 503) err503();
-            else if(err.response && err.response.status === 401) err401();
-            else errGeneral();
+            error();
           });
         });
       } else {
@@ -139,9 +133,7 @@ const Games = props => {
       success();
       setPageUpdate(!pageUpdate);
     }).catch(err => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error();
     });
   }
 

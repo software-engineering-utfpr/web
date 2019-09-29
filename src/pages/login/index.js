@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import { login } from '../../services/auth';
-import { err503, err401, errGeneral } from '../../services/messages';
+import { error } from '../../services/messages';
 
 import './style.css';
 
@@ -39,9 +39,7 @@ const Login = props => {
         }).catch(err => {
           setLoading(false);
 
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
+          error();
         });
       } else setLoading(false);
     });
