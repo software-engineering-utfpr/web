@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button, Row, Col, Modal, Input, Form, Icon, List, Avatar, Badge, Popover, Card } from 'antd';
-import { err503, err401, errGeneral, success } from '../../services/messages';
+import { error, success } from '../../services/messages';
 
 // import { Redirect } from 'react-router-dom';
 
@@ -9,6 +9,8 @@ import axios from 'axios';
 import MainLayout from '../../components/layout';
 
 import './style.css';
+
+import { isAdmin } from '../../services/auth' ;
 
 const { Search } = Input;
 
@@ -36,9 +38,7 @@ const UsersWeb = props => {
       setLoadingPage(false);
     }).catch((err) => {
       setLoadingPage(false);
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
     });
   },[pageUpdate]); // só re-renderiza se users.length mudar
 
@@ -73,24 +73,18 @@ const UsersWeb = props => {
           setModalCadastro(false);
           cleanInputs();
           setPageUpdate(!pageUpdate);
-        }).catch(() => {
+        }).catch((err) => {
           setConfirmLoading(false);
           setModalCadastro(false);
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
-          });
+          error(err);
+        });
       } else {
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
+          error(err);
           setConfirmLoading(false);
           setModalCadastro(false);
       }
     }).catch((err) => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
       setConfirmLoading(false);
       setModalCadastro(false);
     });
@@ -130,21 +124,15 @@ const UsersWeb = props => {
         }).catch((err) => {
           setConfirmLoading(false);
           setModalUpdate(false);
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
-          });
+          error(err);
+        });
       } else {
-          if(err.response && err.response.status === 503) err503();
-          else if(err.response && err.response.status === 401) err401();
-          else errGeneral();
+          error(err);
           setConfirmLoading(false);
           setModalUpdate(false);
       }
     }).catch((err) => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
       setConfirmLoading(false);
       setModalUpdate(false);
     });
@@ -206,30 +194,27 @@ const UsersWeb = props => {
 
   const searchByName = (e) => setManagersFiltered(managers.filter(r => r.name.toLowerCase().includes(e.target.value.toLowerCase())));
 
-  const deleteManager = (id) => {
-    axios.delete(`/api/managers/${id}`).then(res => {
-      success();
-      setPageUpdate(!pageUpdate);
-    }).catch(err => {
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
-    });
-  }
-
-  const changePriority = (item) => {
+  function changePriority (item) {
     setConfirmLoading(true);
-    console.log("Clicou!");
-    axios.put('/api/managers/', { id: item._id , superuser: !item.superuser }).then(() => {
+    const superuser = !item.superuser;
+    console.log(item.superuser, superuser);
+    axios.put('/api/managers/', { id: item._id , superuser  }).then(() => {
       success();
       setConfirmLoading(false);
       setPageUpdate(!pageUpdate);
     }).catch((err) => {
       setConfirmLoading(false);
-      if(err.response && err.response.status === 503) err503();
-      else if(err.response && err.response.status === 401) err401();
-      else errGeneral();
+      error(err);
       });
+  };
+
+  const deleteManager = (id) => {
+    axios.delete(`/api/managers/${id}`).then(res => {
+      success();
+      setPageUpdate(!pageUpdate);
+    }).catch(err => {
+      error(err);
+    });
   }
 
   return (
@@ -241,7 +226,11 @@ const UsersWeb = props => {
             <Icon type = "container" style = {{ marginRight: 6, color: '#00AD45' }} /> Usuários cadastrados
           </>
         }
-        extra = {<Button type = "primary" style = {{ color: "white"}} onClick = {showCadastroModal} > Adicionar Usuário </Button>}
+        extra = {
+          isAdmin() === 'true' ? (
+            <Button type = "primary" style = {{ color: "white"}} onClick = {showCadastroModal} > Adicionar Usuário </Button>
+          ) : null
+        }
       >
         <Row gutter = {24} type = "flex" justify = "end" style = {{ marginBottom: 18 }}>
           <Col span = {10}>
@@ -261,9 +250,10 @@ const UsersWeb = props => {
               renderItem = {(item) => (
                 <List.Item
                   key={item.Name}
-                  actions={[
+                  actions={
+                    isAdmin() === 'true' ? ([
                     <Popover content = "editar usuário">
-                      <Icon type="edit" onClick = {() => showUpdateModal(item)} />
+                      <Icon type="edit" onClick = {() => changePriority(item)} />
                     </Popover>,
                     <Popover content = "deletar usuário">
                       <Icon type="delete"
@@ -281,9 +271,10 @@ const UsersWeb = props => {
                           style = {{ color: "red" }}  />
                     </Popover>,
                     <Popover content = "!Superuser">
-                      <Button onCLick ={() => changePriority(item)} > !Superuser </Button>
+                      <Button onClick = {() => changePriority(item)} > !Superuser </Button>
                     </Popover>
-                  ]}
+                    ]) : ([])
+                  }
                 >
                   <List.Item.Meta
                     avatar={
