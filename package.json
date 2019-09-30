@@ -26,7 +26,7 @@
     "eject": "react-app-rewired eject",
     "test": "CI=true react-app-rewired test --env=jsdom",
     "test:coverage": "npm test -- --coverage",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build"
   },
   "homepage": "https://software-engineering-utfpr.github.io/web/",
   "proxy": "https://rio-campo-limpo.herokuapp.com/",
