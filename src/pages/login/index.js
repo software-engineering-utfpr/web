@@ -33,7 +33,7 @@ const Login = props => {
       if (!err) {
         const { email, password } = values;
 
-        axios.post('/https://rio-campo-limpo.herokuapp.com/api/managers/login', { email, password }).then(res => {
+        axios.post('/api/managers/login', { email, password }).then(res => {
           login(res.data.token, res.data.manager.name, res.data.manager.superuser, res.data.manager.id);
 
           const hide = message.loading(`Bem-vindo ${res.data.manager.name}!! 🤗`, 0);

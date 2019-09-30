@@ -29,7 +29,7 @@ const CalendarMainPage = props => {
   useEffect(() => {
     setLoadingPage(true);
 
-    axios.get('/https://rio-campo-limpo.herokuapp.com/api/events').then((res) => {
+    axios.get('/api/events').then((res) => {
       setLoadingPage(false);
       setEvents(res.data);
       setEventsFiltered(res.data);
@@ -138,7 +138,7 @@ const CalendarMainPage = props => {
       if(!err) {
         const { name, date, allDay, description, color } = values;
 
-        axios.post('/https://rio-campo-limpo.herokuapp.com/api/events', { name, initialDate: date[0], finalDate: date[1], allDay, description, color: color.hex }).then(res => {
+        axios.post('/api/events', { name, initialDate: date[0], finalDate: date[1], allDay, description, color: color.hex }).then(res => {
           setPageUpdate(!pageUpdate);
           closeCalendarModal();
           success();
@@ -160,7 +160,7 @@ const CalendarMainPage = props => {
       if(!err) {
         const { name, date, allDay, description, color } = values;
 
-        axios.put('/https://rio-campo-limpo.herokuapp.com/api/events', { id: calendarModal.eventID, name, initialDate: date[0], finalDate: date[1], allDay, description, color: color.hex }).then(res => {
+        axios.put('/api/events', { id: calendarModal.eventID, name, initialDate: date[0], finalDate: date[1], allDay, description, color: color.hex }).then(res => {
           setPageUpdate(!pageUpdate);
           closeCalendarModal();
           success();
