@@ -299,8 +299,8 @@ const UsersWeb = props => {
                 <Form.Item label = "Confirmar Senha">
                   { getFieldDecorator('confirmPassword', {
                     rules: [
-                      { required: !adminModal.adminID, message: 'Por favor, confirme sua senha!' },
-                      { min: adminModal.adminID ? 0 : 8, message: 'Por favor, insira uma senha maior que 7!' },
+                      { required: true, message: 'Por favor, confirme sua senha!' },
+                      { min: 8, message: 'Por favor, insira uma senha maior que 7!' },
                       { validator: compareToFirstPassword }
                     ]
                   })(
