@@ -22,6 +22,10 @@ import Settings from './pages/settings';
 import 'moment/locale/pt-br';
 import './App.css';
 
+import axios from 'axios';
+
+axios.defaults.baseURL = 'https://rio-campo-limpo.herokuapp.com/';
+
 moment.locale('pt-BR');
 
 const App = () => {
