@@ -28,7 +28,7 @@
     "test:coverage": "npm test -- --coverage",
     "predeploy": "npm run build"
   },
-  "homepage": "https://rio-campo-limpo.herokuapp.com/",
+  "homepage": "https://software-engineering-utfpr.github.io/web/",
   "proxy": "https://rio-campo-limpo.herokuapp.com/",
   "root": "build/",
   "routes": {
