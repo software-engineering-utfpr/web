@@ -28,7 +28,7 @@ const Games = props => {
   useEffect(() => {
     setLoadingPage(true);
 
-    axios.get('./api/games').then((res) => {
+    axios.get('/api/games').then((res) => {
       setLoadingPage(false);
       setGames(res.data);
       setGamesFiltered(res.data);
@@ -90,7 +90,7 @@ const Games = props => {
       if(!err) {
         axios.get(`/api/games/getById/${values.game}`).then(res => {
           const { title, appId, developer, url, scoreText, icon } = res.data;
-          axios.post('./api/games', { appId, name: title, link: url, image: icon, developer, score: scoreText }).then(res => {
+          axios.post('/api/games', { appId, name: title, link: url, image: icon, developer, score: scoreText }).then(res => {
             setPageUpdate(!pageUpdate);
             closeGameModal();
             success();
@@ -113,7 +113,7 @@ const Games = props => {
       if(!err) {
         axios.get(`/api/games/getById/${values.game}`).then(res => {
           const { title, appId, developer, url, scoreText, icon } = res.data;
-          axios.put('./api/games', { id: gameModal.gameID, appId, name: title, link: url, image: icon, developer, score: scoreText }).then(res => {
+          axios.put('/api/games', { id: gameModal.gameID, appId, name: title, link: url, image: icon, developer, score: scoreText }).then(res => {
             setPageUpdate(!pageUpdate);
             closeGameModal();
             success();

@@ -27,7 +27,7 @@ const UsersWeb = props => {
 
   useEffect(() => {
     setLoadingPage(true);
-    axios.get('./api/managers/').then(res => {
+    axios.get('/api/managers/').then(res => {
       setManagers(res.data);
       setManagersFiltered(res.data);
       setLoadingPage(false);
@@ -93,7 +93,7 @@ const UsersWeb = props => {
       if(!err) {
         const { name, email, password } = values;
 
-        axios.post('./api/managers/', { email, name, password }).then(() => {
+        axios.post('/api/managers/', { email, name, password }).then(() => {
           setPageUpdate(!pageUpdate);
           closeAdminModal();
           success();
@@ -115,7 +115,7 @@ const UsersWeb = props => {
       if(!err) {
         const { name, email, password } = values;
 
-        axios.put('./api/managers/', { id: adminModal.adminID, email, name, superuser: '', password }).then(() => {
+        axios.put('/api/managers/', { id: adminModal.adminID, email, name, superuser: '', password }).then(() => {
           setPageUpdate(!pageUpdate);
           closeAdminModal();
           success();
@@ -131,7 +131,7 @@ const UsersWeb = props => {
 
   const changePriority = (item) => {
     const superuser = !item.superuser;
-    axios.put('./api/managers/', { id: item._id , superuser }).then(() => {
+    axios.put('/api/managers/', { id: item._id , superuser }).then(() => {
       success();
       setPageUpdate(!pageUpdate);
     }).catch((err) => {

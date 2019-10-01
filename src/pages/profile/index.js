@@ -29,7 +29,7 @@ const Profile = props => {
 
   useEffect(() => {
     setLoadingPage(true);
-    axios.get('./api/managers/').then(res => {
+    axios.get('/api/managers/').then(res => {
       const user = res.data[res.data.map(e => e._id).indexOf(getID())];
       setManager(user);
       setManagers(res.data);
@@ -66,7 +66,7 @@ const Profile = props => {
     }).then(res => {
       const image = res.data.secure_url;
 
-      axios.put('./api/managers', { id: manager._id, superuser: '', image }).then(res => {
+      axios.put('/api/managers', { id: manager._id, superuser: '', image }).then(res => {
         setPhoto({ ...photo, loading: false });
         setPageUpdate(!pageUpdate);
         success();
@@ -119,7 +119,7 @@ const Profile = props => {
     validateFields(['name', 'email'], (err, values) => {
       if(!err) {
         const { name, email } = values;
-        axios.put('./api/managers', { id: manager._id, name, email, superuser: '' }).then(res => {
+        axios.put('/api/managers', { id: manager._id, name, email, superuser: '' }).then(res => {
           setPageUpdate(!pageUpdate);
           setButtonLoading(false);
           success();
@@ -140,7 +140,7 @@ const Profile = props => {
     validateFields(['password', 'confirmPassword'], (err, values) => {
       if(!err) {
         const { password } = values;
-        axios.put('./api/managers', { id: manager._id, password, superuser: '' }).then(res => {
+        axios.put('/api/managers', { id: manager._id, password, superuser: '' }).then(res => {
           setPageUpdate(!pageUpdate);
           setButtonLoading(false);
           success();
