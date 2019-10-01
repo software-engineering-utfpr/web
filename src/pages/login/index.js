@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Button, Card, Input, Icon, Typography, message } from 'antd';
 import { Redirect } from 'react-router-dom';
 
-import axios from 'axios';
+import axios from '../../axios';
 
 import { login, getToken } from '../../services/auth';
 import { error } from '../../services/messages';
