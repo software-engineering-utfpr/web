@@ -29,6 +29,7 @@
     "predeploy": "npm run build"
   },
   "homepage": "./",
+  "proxy": "https://rio-campo-limpo.herokuapp.com/",
   "root": "build/",
   "routes": {
     "/**": "index.html"
