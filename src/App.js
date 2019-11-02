@@ -33,7 +33,7 @@ const App = () => {
     <ConfigProvider locale = {ptBR}>
       <BrowserRouter>
         <Switch>
-          <Route path = "/" exact component = { Login } />
+          <Route path = "/login" exact component = { Login } />
           <Route path = "/home" exact component = { Home } />
           <Route path = "/edit/profile" exact component = { Profile } />
 
