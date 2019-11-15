@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Typography, Button, Row, Col, Icon, Menu, Avatar, Badge, Popover, Card, Upload, message, Form, Input } from 'antd';
 import { error, success } from '../../services/messages';
-
 import MainLayout from '../../components/layout';
 
 import './style.css';
@@ -157,7 +156,7 @@ const Profile = props => {
   return (
     <MainLayout page = "Perfil" loading = {loadingPage} title = "Pefil do Usuário" breadcrumb = {['Meu Perfil']}>
       <Row gutter = {16}>
-        <Col span = {7}>
+        <Col span = {7}>  
           <Card bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}>
             { isAdmin() === 'true' ? (
               <Badge count = {<Popover placement = "right" content = "Administrador"> <Icon type = "star" theme = "filled" style = {{ color: '#FFFFFF', background: '#5ECC62', borderRadius: '50%', padding: 8, marginTop: 10, marginRight: 10 }}/> </Popover>}>
@@ -180,7 +179,6 @@ const Profile = props => {
             </Menu>
           </Card>
         </Col>
-
         <Col span = {17}>
           <Card bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}
             title = {

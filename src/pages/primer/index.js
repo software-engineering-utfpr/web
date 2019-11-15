@@ -8,8 +8,11 @@ import { isAdmin, getID } from '../../services/auth' ;
 import axios from 'axios';
 
 import './style.css';
+import TextArea from 'antd/lib/input/TextArea';
 
-const { Text, Paragraph } = Typography;
+import GoogleMapReact from 'google-map-react';
+
+const { Title, Text, Paragraph } = Typography;
 const { Search } = Input;
 
 const Primer = props => {
@@ -21,7 +24,7 @@ const Primer = props => {
   const [residueFiltered, setResidueFiltered] = useState([]);
   const [pageUpdate, setPageUpdate] = useState(false);
   const [photo, setPhoto] = useState({
-    residuePhoto: [],
+    residuePhoto: "https://us.123rf.com/450wm/myvector/myvector1412/myvector141200159/34562731-stock-vector-separate-waste-collection-icon.jpg?ver=6",
     newResiduePhoto: [],
     loading: false
   });
@@ -30,6 +33,28 @@ const Primer = props => {
     visibility: false,
     loading: false
   });
+  const [center, setCenter] = useState({
+    lat: -24.046,
+    lng:-52.3838
+  });
+  const [marker, setMarker] = useState({
+    lat: -24.046,
+    lng:-52.3838
+  });
+
+  const [visualizationModal, setVisualizationModal] = useState({
+    loading: false,
+    visibility: false,
+    name: '',
+    description: '',
+    centerModal: {
+      lat: '',
+      lng: '',  
+    },
+    photo: ''
+  });
+
+  const GOOGLE_MAPS_APIKEY = "AIzaSyBfbkA9k_JG99c-I5Zjslywmz9O4BlHH10";
 
   useEffect(() => {
     setLoadingPage(true);
@@ -45,8 +70,34 @@ const Primer = props => {
 
   const searchResidue = (e) => setResidueFiltered(residue.filter(r => r.name.toLowerCase().includes(e.target.value.toLowerCase())));
 
+  const openVisualizationModal = (id) => {
+    setVisualizationModal({...visualizationModal, loading: true});
+    axios.get('/api/leavings/' + id).then(res => {
+      console.log(res.data);
+      setVisualizationModal({ visibility: true, name: res.data.name, description: res.data.description, photo: res.data.image, centerModal: {lat: res.data.latitude, lng: res.data.longitude}, loading: false });
+    }).catch((err) => {
+      setVisualizationModal({...visualizationModal, loading: false});
+      error(err);
+    });
+  }
+
   const openNewResidueModal = () => {
     setResidueModal({ ...residueModal, _id: '', visibility: true });
+  }
+
+  const closeVisualizationModal = () => {
+    // resetFields(['name2', 'description2']);
+    setVisualizationModal({
+      loading: false,
+      visibility: false,
+      name: '',
+      description: '',
+      centerModal: {
+        lat: '',
+        lng: '',  
+      },
+      photo: ''
+    });
   }
 
   const openUpdateResidueModel = (admin) => {
@@ -71,7 +122,6 @@ const Primer = props => {
 
   const changeResidue = (residueChange) => {
     setPhoto({ ...photo, loading: true });
-    
     const formData = new FormData();
     formData.append('api_key', '584136724691346');
     formData.append('timestamp', (Date.now() / 1000));
@@ -82,30 +132,37 @@ const Primer = props => {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     }).then(res => {
       const image = res.data.secure_url;
-
-      axios.put('/api/residue', { id: residueChange._id, image }).then(res => {
-        setPhoto({ ...photo, loading: false });
+      console.log(residueChange._id)
+      if(residueChange._id !== undefined){
+        axios.put('/api/residue', { id: residueChange._id, image }).then(res => {
+          setPhoto({ ...photo, newResiduePhoto: image, loading: false });
+          setPageUpdate(!pageUpdate);
+          success();
+        }).catch(err => {
+          setPhoto({ ...photo, loading: false });
+          error(err);
+        });
+      }else{
+        setPhoto({ ...photo, newResiduePhoto: image, loading: false });
         setPageUpdate(!pageUpdate);
-        success();
-      }).catch(err => {
-        setPhoto({ ...photo, loading: false });
-        error(err);
-      });
+      }
+      
     }).catch(err => {
+      console.log("deu erro muleke", err)
       setPhoto({ ...photo, loading: false });
       error(err);
     });
   }
 
-  const handleNewAdmin = e => {
+  const handleNewResidue = e => {
     setResidueModal({ ...residueModal, loading: true });
     e.preventDefault();
 
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
-        const { name, description, password } = values;
-
-        axios.post('/api/leavings/', { description, name, password }).then(() => {
+        const { name, description } = values;
+        console.log( marker )
+        axios.post('/api/leavings/', { name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
           closeResidueModal();
           success();
@@ -119,7 +176,7 @@ const Primer = props => {
     });
   }
 
-  const handleEditAdmin = e => {
+  const handleEditResidue = e => {
     setResidueModal({ ...residueModal, loading: true });
     e.preventDefault();
 
@@ -140,7 +197,6 @@ const Primer = props => {
       }
     });
   }
-
 
   const closeResidueModal = () => {
     resetFields(['name', 'description']);
@@ -184,16 +240,7 @@ const Primer = props => {
               <Row>
                 { item._id !== getID() ? (
                   <Button.Group style = {{ fontSize: 17, position: 'absolute', right: 0, top: 0 }}>
-                     {/* { item.superuser === false ? (
-                      <Popover placement = "left" content = "Tornar Administrador">
-                        <Button style = {{ backgroundColor: '#FFFFFF', color: '#5ECC62', borderColor: '#5ECC62' }} size = "small" onClick = { () => changePriority(item) } icon = "vertical-align-top" />
-                      </Popover>
-                    ) : ( 
-                      <Popover placement = "left" content = "Retirar Administração">
-                        <Button style = {{ backgroundColor: '#FFFFFF', color: '#FF5154', borderColor: '#FF5154' }} size = "small" onClick = { () => changePriority(item) } icon = "vertical-align-bottom" />
-                      </Popover>
-                    )} */}
-
+                    <Button style = {{ backgroundColor: '#FFFFFF', color: '#5ECC62', borderColor: '#5ECC62' }} onClick = {() => openVisualizationModal(item._id)} size = "small" icon = "eye" />
                     <Dropdown
                       overlay = {(
                         <Menu>
@@ -237,7 +284,7 @@ const Primer = props => {
                   )
                 }
                 title = {<Text strong> { item.name } </Text>}
-                description = {<Text type = "secondary" ellipsis style = {{ width: '100%' }}> { item.email } </Text>}
+                description = {<Paragraph type = "secondary" ellipsis={{ rows: 1, expandable: true }} style = {{ width: '100%' }}> { item.description } </Paragraph>}
               />
             </List.Item>
           )}
@@ -250,15 +297,16 @@ const Primer = props => {
           <Icon type = { residueModal._id ? 'edit' : 'plus' } />
         </Divider>
 
-        <Form onSubmit = { residueModal._id ? handleEditAdmin : handleNewAdmin }>
-          <Form.Item label = "Foto do Resíduo">
+        <Form onSubmit = { residueModal._id ? handleEditResidue : handleNewResidue }>
+          <Form.Item style = {{alignContent: "center"}}>
             { getFieldDecorator('fotoDoResiduo')(
-              <Row>
-                <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.profilePhoto : photo.newResiduePhoto } />
-
-                <Upload beforeUpload = { beforeUploadPhoto } customRequest = { () => changeResidue(residueModal._id) } fileList = { photo.newResiduePhoto } showUploadList = {false} accept = "image/*">
-                  <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> Adicionar Imagem </Button>
-                </Upload>
+              <Row type = "flex" justify = "center">
+                <Col>
+                  <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto } />
+                  <Upload beforeUpload = { beforeUploadPhoto } customRequest = { () => changeResidue(residueModal._id) } fileList = { photo.newResiduePhoto } showUploadList = {false} accept = "image/*">
+                    <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> Adicionar Imagem </Button>
+                  </Upload>
+                </Col>
               </Row>
             )}
           </Form.Item>
@@ -276,15 +324,33 @@ const Primer = props => {
           <Form.Item label = "Descrição">
             { getFieldDecorator('description', {
               rules: [
-                { required: true, message: 'Por favor, digite um email!' }
+                { required: true, message: 'Por favor, digite uma descrição!' }
               ]
             })(
-              <Input
-                prefix = {<Icon type = "mail" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
+              <TextArea
+                prefix = {<Icon type = "text" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
                 placeholder = "descrição" style = {{ fontSize: 13 }}
+                rows = {5}
               />
             )}
           </Form.Item>
+          <Row style={{ height: '30vh', width: '100%' }}>
+            <GoogleMapReact
+              bootstrapURLKeys={{ key: GOOGLE_MAPS_APIKEY }}
+              defaultCenter={center}
+              defaultZoom={15}
+              onClick = {({x, y, lat, lng, event}) =>  setMarker({lat, lng})}
+            >
+              <Icon 
+                type = "environment"
+                style = {{color:"red", fontSize: '30px'}}
+                theme="filled"
+                lat={marker.lat}
+                lng={marker.lng}
+              />
+            </GoogleMapReact>
+
+          </Row>      
 
           <Row style = {{ textAlign: 'right' }}>
             <Button size = "default" onClick = { closeResidueModal } style = {{ marginRight: 8 }}> Cancelar </Button>
@@ -292,8 +358,39 @@ const Primer = props => {
           </Row>
         </Form>
       </Modal>
+      <Modal visible = { visualizationModal.visibility } onCancel = { closeVisualizationModal } footer = { null }>
+        <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> Visualizar </Paragraph>
+
+        <Divider style = {{ fontSize: 20, minWidth: '60%', width: '60%', marginTop: 0, marginLeft: 'auto', marginRight: 'auto' }}>
+          <Icon type = { 'eye' } />
+        </Divider>
+        
+        <Title level={3}>{visualizationModal.name}</Title>
+        <Paragraph>{visualizationModal.description}</Paragraph>
+        
+        <Row style={{ height: '30vh', width: '100%' }}>
+          <GoogleMapReact
+            bootstrapURLKeys={{ key: GOOGLE_MAPS_APIKEY }}
+            defaultCenter={visualizationModal.centerModal}
+            defaultZoom={15}
+          >
+            <Icon
+              
+              type = "environment"
+              style = {{ position: 'absolute', color:"red", fontSize: '30px'}}
+              theme="filled"
+              lat={visualizationModal.centerModal.lat}
+              lng={visualizationModal.centerModal.lng}
+            />
+          </GoogleMapReact>
+
+        </Row>      
+      </Modal>
+
     </MainLayout>
   );
 };
+
+
 const WrappedNormalPrimerForm = Form.create({ name: 'PrimerUpdate' })(Primer);
 export default WrappedNormalPrimerForm;
