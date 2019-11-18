@@ -31,7 +31,11 @@ const Primer = props => {
   const [residueModal, setResidueModal] = useState({
     _id: '',
     visibility: false,
-    loading: false
+    loading: false,
+    centerModal: {
+      lat: '',
+      lng: '',  
+    },
   });
   const [center, setCenter] = useState({
     lat: -24.046,
@@ -73,7 +77,7 @@ const Primer = props => {
   const openVisualizationModal = (id) => {
     setVisualizationModal({...visualizationModal, loading: true});
     axios.get('/api/leavings/' + id).then(res => {
-      console.log(res.data);
+      // console.log(res.data);
       setVisualizationModal({ visibility: true, name: res.data.name, description: res.data.description, photo: res.data.image, centerModal: {lat: res.data.latitude, lng: res.data.longitude}, loading: false });
     }).catch((err) => {
       setVisualizationModal({...visualizationModal, loading: false});
@@ -102,11 +106,15 @@ const Primer = props => {
 
   const openUpdateResidueModel = (admin) => {
     setResidueModal({ ...residue, _id: admin._id, visibility: true });
+    setPhoto({newResiduePhoto: admin.image});
     setFieldsValue({
-      name: residue.name,
-      description: residue.description,
-      image: residue.image
+      ['name']: admin.name,
+      ['description']: admin.description,
     });
+    setMarker({
+      lat: admin.latitude,
+      lng: admin.longitude
+    })
   }
 
   const beforeUploadPhoto = (file) => {
@@ -132,7 +140,7 @@ const Primer = props => {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     }).then(res => {
       const image = res.data.secure_url;
-      console.log(residueChange._id)
+      // console.log(residueChange._id)
       if(residueChange._id !== undefined){
         axios.put('/api/residue', { id: residueChange._id, image }).then(res => {
           setPhoto({ ...photo, newResiduePhoto: image, loading: false });
@@ -148,7 +156,7 @@ const Primer = props => {
       }
       
     }).catch(err => {
-      console.log("deu erro muleke", err)
+      // console.log("deu erro muleke", err)
       setPhoto({ ...photo, loading: false });
       error(err);
     });
@@ -161,7 +169,7 @@ const Primer = props => {
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
         const { name, description } = values;
-        console.log( marker )
+        // console.log( marker )
         axios.post('/api/leavings/', { name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
           closeResidueModal();
@@ -179,12 +187,12 @@ const Primer = props => {
   const handleEditResidue = e => {
     setResidueModal({ ...residueModal, loading: true });
     e.preventDefault();
-
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
-        const { name, description, password } = values;
+        const { name, description } = values;
+        console.log(name, ",", description, ",", marker, ",", photo.newResiduePhoto);
 
-        axios.put('/api/leavings/', { id: residueModal.adminID, description, name, superuser: '', password }).then(() => {
+        axios.put('/api/leavings/', { id: residueModal._id ,name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
           closeResidueModal();
           success();
@@ -197,6 +205,14 @@ const Primer = props => {
       }
     });
   }
+
+  const deleteResidue = (id) => {
+    axios.delete(`/api/leavings/${id}`).then(res => {
+      success();
+      setPageUpdate(!pageUpdate);
+    }).catch(err => {
+      error(err);
+    });  }
 
   const closeResidueModal = () => {
     resetFields(['name', 'description']);
@@ -253,7 +269,7 @@ const Primer = props => {
                                 content: 'Esta ação é permanente, não haverá forma de restaurar ação.',
                                 okType: 'danger',
                                 onOk() {
-                                  // deleteManager(item._id)
+                                  deleteResidue(item._id)
                                 },
                                 onCancel() {}
                               });
@@ -304,7 +320,7 @@ const Primer = props => {
                 <Col>
                   <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto } />
                   <Upload beforeUpload = { beforeUploadPhoto } customRequest = { () => changeResidue(residueModal._id) } fileList = { photo.newResiduePhoto } showUploadList = {false} accept = "image/*">
-                    <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> Adicionar Imagem </Button>
+                    <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> {residueModal._id ? "Editar Imagem" : "Adicionar Imagem"} </Button>
                   </Upload>
                 </Col>
               </Row>
@@ -351,21 +367,20 @@ const Primer = props => {
             </GoogleMapReact>
 
           </Row>      
-
+          <br/>
           <Row style = {{ textAlign: 'right' }}>
             <Button size = "default" onClick = { closeResidueModal } style = {{ marginRight: 8 }}> Cancelar </Button>
-            <Button loading = { residueModal.loading } type = "primary" htmlType = "submit" size = "default"> { residueModal._id === 1 ? 'Atualizar' : 'Criar' } </Button>
+            <Button loading = { residueModal.loading } type = "primary" htmlType = "submit" size = "default"> { residueModal._id ? 'Atualizar' : 'Criar' } </Button>
           </Row>
         </Form>
       </Modal>
       <Modal visible = { visualizationModal.visibility } onCancel = { closeVisualizationModal } footer = { null }>
-        <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> Visualizar </Paragraph>
+        <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> {visualizationModal.name} </Paragraph>
 
         <Divider style = {{ fontSize: 20, minWidth: '60%', width: '60%', marginTop: 0, marginLeft: 'auto', marginRight: 'auto' }}>
           <Icon type = { 'eye' } />
         </Divider>
-        
-        <Title level={3}>{visualizationModal.name}</Title>
+      
         <Paragraph>{visualizationModal.description}</Paragraph>
         
         <Row style={{ height: '30vh', width: '100%' }}>

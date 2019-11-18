@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "/home/santana/Documentos/EngSoft_2/web"
+		},
+		{
+			"path": "/home/santana/Documentos/EngSoft_2/api"
+		},
+		{
+			"path": "/home/santana/Documentos/EngSoft_2/app"
+		}
+	],
+	"settings": {
+		"editor.tabSize": 2
+	}
+}
