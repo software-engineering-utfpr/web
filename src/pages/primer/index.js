@@ -3,7 +3,7 @@ import { Typography, Card, Icon, Button, List, Row, Col, Popover, Dropdown, Menu
 import { error, success } from '../../services/messages';
 
 import MainLayout from '../../components/layout';
-import { isAdmin, getID } from '../../services/auth' ;
+import { getID } from '../../services/auth' ;
 
 import axios from 'axios';
 
@@ -12,12 +12,12 @@ import TextArea from 'antd/lib/input/TextArea';
 
 import GoogleMapReact from 'google-map-react';
 
-const { Title, Text, Paragraph } = Typography;
+const { Text, Paragraph } = Typography;
 const { Search } = Input;
 
 const Primer = props => {
 
-  const { getFieldDecorator, setFieldsValue, resetFields, getFieldValue, validateFields } = props.form;
+  const { getFieldDecorator, setFieldsValue, resetFields } = props.form;
 
   const [loadingPage, setLoadingPage] = useState(false);
   const [residue, setResidue] = useState([]);
@@ -108,8 +108,8 @@ const Primer = props => {
     setResidueModal({ ...residue, _id: admin._id, visibility: true });
     setPhoto({newResiduePhoto: admin.image});
     setFieldsValue({
-      ['name']: admin.name,
-      ['description']: admin.description,
+      name: admin.name,
+      description: admin.description,
     });
     setMarker({
       lat: admin.latitude,
