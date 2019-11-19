@@ -22,7 +22,7 @@ const Login = props => {
   const [nav, setNav] = useState('');
 
   useEffect(() => {
-    // if(getToken()) setNav('/home');
+    if(getToken()) setNav('/home');
   }, []);
 
   const handleSubmit = e => {

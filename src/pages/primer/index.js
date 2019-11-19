@@ -8,16 +8,19 @@ import { isAdmin, getID } from '../../services/auth' ;
 import axios from 'axios';
 
 import './style.css';
-import TextArea from 'antd/lib/input/TextArea';
 
 import GoogleMapReact from 'google-map-react';
 
-const { Title, Text, Paragraph } = Typography;
-const { Search } = Input;
+const { Text, Paragraph } = Typography;
+const { Search, TextArea } = Input;
 
 const Primer = props => {
 
-  const { getFieldDecorator, setFieldsValue, resetFields, getFieldValue, validateFields } = props.form;
+  const { getFieldDecorator, setFieldsValue, resetFields } = props.form;
+  const center = {
+    lat: -24.046,
+    lng: -52.3838
+  };
 
   const [loadingPage, setLoadingPage] = useState(false);
   const [residue, setResidue] = useState([]);
@@ -36,10 +39,6 @@ const Primer = props => {
       lat: '',
       lng: '',  
     },
-  });
-  const [center, setCenter] = useState({
-    lat: -24.046,
-    lng:-52.3838
   });
   const [marker, setMarker] = useState({
     lat: -24.046,
@@ -77,7 +76,6 @@ const Primer = props => {
   const openVisualizationModal = (id) => {
     setVisualizationModal({...visualizationModal, loading: true});
     axios.get('/api/leavings/' + id).then(res => {
-      // console.log(res.data);
       setVisualizationModal({ visibility: true, name: res.data.name, description: res.data.description, photo: res.data.image, centerModal: {lat: res.data.latitude, lng: res.data.longitude}, loading: false });
     }).catch((err) => {
       setVisualizationModal({...visualizationModal, loading: false});
@@ -90,7 +88,6 @@ const Primer = props => {
   }
 
   const closeVisualizationModal = () => {
-    // resetFields(['name2', 'description2']);
     setVisualizationModal({
       loading: false,
       visibility: false,
@@ -108,9 +105,10 @@ const Primer = props => {
     setResidueModal({ ...residue, _id: admin._id, visibility: true });
     setPhoto({newResiduePhoto: admin.image});
     setFieldsValue({
-      ['name']: admin.name,
-      ['description']: admin.description,
+      name: admin.name,
+      description: admin.description
     });
+
     setMarker({
       lat: admin.latitude,
       lng: admin.longitude
@@ -140,7 +138,6 @@ const Primer = props => {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     }).then(res => {
       const image = res.data.secure_url;
-      // console.log(residueChange._id)
       if(residueChange._id !== undefined){
         axios.put('/api/residue', { id: residueChange._id, image }).then(res => {
           setPhoto({ ...photo, newResiduePhoto: image, loading: false });
@@ -156,7 +153,6 @@ const Primer = props => {
       }
       
     }).catch(err => {
-      // console.log("deu erro muleke", err)
       setPhoto({ ...photo, loading: false });
       error(err);
     });
@@ -169,7 +165,7 @@ const Primer = props => {
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
         const { name, description } = values;
-        // console.log( marker )
+
         axios.post('/api/leavings/', { name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
           closeResidueModal();
@@ -190,7 +186,6 @@ const Primer = props => {
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
         const { name, description } = values;
-        console.log(name, ",", description, ",", marker, ",", photo.newResiduePhoto);
 
         axios.put('/api/leavings/', { id: residueModal._id ,name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
