@@ -1,0 +1,11 @@
+a.ant-typography-expand:after {
+    content: "Expandir";
+    color: #2F80ED;
+    font-weight: 600;
+    margin-left: -56px;
+  }
+  
+  a.ant-typography-expand,
+  a.ant-typography-expand:hover {
+    color: transparent;
+  }
