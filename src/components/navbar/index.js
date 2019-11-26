@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Row, Col, Menu, Affix, Avatar, Button, Card, Icon, message, Typography, Popover } from 'antd';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 
 import axios from 'axios';
 
@@ -163,4 +163,4 @@ const NavBar = props => {
   }
 }
 
-export default NavBar;
+export default withRouter(NavBar);
