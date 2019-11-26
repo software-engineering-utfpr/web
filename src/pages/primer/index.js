@@ -3,24 +3,21 @@ import { Typography, Card, Icon, Button, List, Row, Col, Popover, Dropdown, Menu
 import { error, success } from '../../services/messages';
 
 import MainLayout from '../../components/layout';
-import { isAdmin, getID } from '../../services/auth' ;
+import { getID } from '../../services/auth' ;
 
 import axios from 'axios';
 
 import './style.css';
+import TextArea from 'antd/lib/input/TextArea';
 
 import GoogleMapReact from 'google-map-react';
 
 const { Text, Paragraph } = Typography;
-const { Search, TextArea } = Input;
+const { Search } = Input;
 
 const Primer = props => {
 
   const { getFieldDecorator, setFieldsValue, resetFields } = props.form;
-  const center = {
-    lat: -24.046,
-    lng: -52.3838
-  };
 
   const [loadingPage, setLoadingPage] = useState(false);
   const [residue, setResidue] = useState([]);
@@ -39,6 +36,10 @@ const Primer = props => {
       lat: '',
       lng: '',  
     },
+  });
+  const [center, setCenter] = useState({
+    lat: -24.046,
+    lng:-52.3838
   });
   const [marker, setMarker] = useState({
     lat: -24.046,
@@ -76,6 +77,7 @@ const Primer = props => {
   const openVisualizationModal = (id) => {
     setVisualizationModal({...visualizationModal, loading: true});
     axios.get('/api/leavings/' + id).then(res => {
+      // console.log(res.data);
       setVisualizationModal({ visibility: true, name: res.data.name, description: res.data.description, photo: res.data.image, centerModal: {lat: res.data.latitude, lng: res.data.longitude}, loading: false });
     }).catch((err) => {
       setVisualizationModal({...visualizationModal, loading: false});
@@ -88,6 +90,7 @@ const Primer = props => {
   }
 
   const closeVisualizationModal = () => {
+    // resetFields(['name2', 'description2']);
     setVisualizationModal({
       loading: false,
       visibility: false,
@@ -106,9 +109,8 @@ const Primer = props => {
     setPhoto({newResiduePhoto: admin.image});
     setFieldsValue({
       name: admin.name,
-      description: admin.description
+      description: admin.description,
     });
-
     setMarker({
       lat: admin.latitude,
       lng: admin.longitude
@@ -138,6 +140,7 @@ const Primer = props => {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     }).then(res => {
       const image = res.data.secure_url;
+      // console.log(residueChange._id)
       if(residueChange._id !== undefined){
         axios.put('/api/residue', { id: residueChange._id, image }).then(res => {
           setPhoto({ ...photo, newResiduePhoto: image, loading: false });
@@ -153,6 +156,7 @@ const Primer = props => {
       }
       
     }).catch(err => {
+      // console.log("deu erro muleke", err)
       setPhoto({ ...photo, loading: false });
       error(err);
     });
@@ -165,7 +169,7 @@ const Primer = props => {
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
         const { name, description } = values;
-
+        // console.log( marker )
         axios.post('/api/leavings/', { name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
           closeResidueModal();
@@ -186,6 +190,7 @@ const Primer = props => {
     props.form.validateFields(['name', 'description'], (err, values) => {
       if(!err) {
         const { name, description } = values;
+        console.log(name, ",", description, ",", marker, ",", photo.newResiduePhoto);
 
         axios.put('/api/leavings/', { id: residueModal._id ,name, description, latitude: marker.lat, longitude: marker.lng, image: photo.newResiduePhoto }).then(() => {
           setPageUpdate(!pageUpdate);
@@ -218,24 +223,22 @@ const Primer = props => {
   }
 
   return (
-    <MainLayout page = "cartilha" loading = { loadingPage } title = "Gerenciamento de Residuos" breadcrumb = {['Gerenciamento ','Cartilha']}>
+    <MainLayout page = "cartilha" loading = { loadingPage } title = "Gerenciamento de Resíduos" breadcrumb = {['Gerenciamento ','Cartilha']}>
       <Card
         bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}
         title = {
           <>
-            <Icon type = "container" style = {{ marginRight: 6, color: '#00AD45' }} /> Redíduos Cadastrados
+            <Icon type = "container" style = {{ marginRight: 6, color: '#00AD45' }} /> Resíduos Cadastrados
           </>
         }
         extra = {
-          isAdmin() === 'true' ? (
             <Button onClick = { () => openNewResidueModal() } type = "primary" icon = "plus" > Adicionar Resíduo </Button>
-          ) : null
         }
       >
         <Row gutter = {24} type = "flex" justify = "end" style = {{ marginBottom: 18 }}>
           <Col span = {14}>
             <Search
-              placeholder = "Pesquise por um residuo"
+              placeholder = "Pesquise por um resíduo"
               onChange = { e => searchResidue(e) }
               size = "default"
             />
@@ -251,7 +254,7 @@ const Primer = props => {
               <Row>
                 { item._id !== getID() ? (
                   <Button.Group style = {{ fontSize: 17, position: 'absolute', right: 0, top: 0 }}>
-                    <Button style = {{ backgroundColor: '#FFFFFF', color: '#5ECC62', borderColor: '#5ECC62' }} onClick = {() => openVisualizationModal(item._id)} size = "small" icon = "eye" />
+                    <Button style = {{ backgroundColor: '#FFFFFF', color: '#2F80ED', borderColor: '#2F80ED' }} onClick = {() => openVisualizationModal(item._id)} size = "small" icon = "eye" />
                     <Dropdown
                       overlay = {(
                         <Menu>
@@ -260,7 +263,7 @@ const Primer = props => {
                           <Menu.Item
                             onClick = { () => {
                               Modal.confirm({
-                                title: 'Deseja realmente apagar este usuário?',
+                                title: 'Deseja realmente apagar este resíduo?',
                                 content: 'Esta ação é permanente, não haverá forma de restaurar ação.',
                                 okType: 'danger',
                                 onOk() {
@@ -302,7 +305,7 @@ const Primer = props => {
         />
       </Card>
       <Modal visible = { residueModal.visibility } onCancel = { closeResidueModal } footer = { null }>
-        <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> { residueModal._id ? 'Editar Residuo' : 'Novo Residuo' } </Paragraph>
+        <Paragraph style = {{ fontSize: 30, textAlign: 'center', marginBottom: 5 }}> { residueModal._id ? 'Editar Resíduo' : 'Novo Resíduo' } </Paragraph>
 
         <Divider style = {{ fontSize: 20, minWidth: '60%', width: '60%', marginTop: 0, marginLeft: 'auto', marginRight: 'auto' }}>
           <Icon type = { residueModal._id ? 'edit' : 'plus' } />
@@ -321,13 +324,13 @@ const Primer = props => {
               </Row>
             )}
           </Form.Item>
-          <Form.Item label = "Nome">
+          <Form.Item label = "Título">
             { getFieldDecorator('name', {
-              rules: [{ required: true, message: 'Por favor, insira um nome!' }]
+              rules: [{ required: true, message: 'Por favor, insira um título!' }]
             })(
               <Input
-                prefix = {<Icon type = "user" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
-                placeholder = "Seu Nome"
+                prefix = {<Icon type = "font-size" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
+                placeholder = "Insira o título"
               />
             )}
           </Form.Item>
@@ -340,7 +343,7 @@ const Primer = props => {
             })(
               <TextArea
                 prefix = {<Icon type = "text" style = {{ color: 'rgba(0, 0, 0, .25)' }} />}
-                placeholder = "descrição" style = {{ fontSize: 13 }}
+                placeholder = "Digite uma descrição" style = {{ fontSize: 13 }}
                 rows = {5}
               />
             )}
