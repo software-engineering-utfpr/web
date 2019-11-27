@@ -1,11 +1,33 @@
 a.ant-typography-expand:after {
-    content: "Expandir";
-    color: #2F80ED;
-    font-weight: 600;
-    margin-left: -56px;
-  }
-  
-  a.ant-typography-expand,
-  a.ant-typography-expand:hover {
-    color: transparent;
-  }
+  content: "Expandir";
+  color: #2F80ED;
+  font-weight: 600;
+  margin-left: -56px;
+}
+
+a.ant-typography-expand,
+a.ant-typography-expand:hover {
+  color: transparent;
+}
+
+.upload-list-inline .ant-upload-list-item {
+  float: left;
+  width: 200px;
+  margin-right: 8px;
+}
+
+.upload-list-inline .ant-upload-animate-enter {
+  animation-name: uploadAnimateInlineIn;
+}
+
+.upload-list-inline .ant-upload-animate-leave {
+  animation-name: uploadAnimateInlineOut;
+}
+
+.avatar-contain img {
+  object-fit: contain;
+}
+
+.modal-map {
+  width: 600px !important;
+}

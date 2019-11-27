@@ -14,10 +14,7 @@ import Forms from './pages/forms';
 import Games from './pages/games';
 import Primer from './pages/primer';
 
-import UsersApp from './pages/users-app';
 import UsersWeb from './pages/users-web';
-
-import Settings from './pages/settings';
 
 import 'moment/locale/pt-br';
 import './App.css';
@@ -42,10 +39,7 @@ const App = () => {
           <Route path = "/jogos" exact component = { Games } />
           <Route path = "/cartilha" exact component = { Primer } />
 
-          <Route path = "/usuarios-app" exact component = { UsersApp } />
           <Route path = "/usuarios-web" exact component = { UsersWeb } />
-
-          <Route path = "/configuracoes" exact component = { Settings } />
 
           <Route path = "/*" component = { Login } />
         </Switch>
