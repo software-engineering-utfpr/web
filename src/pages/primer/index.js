@@ -24,7 +24,6 @@ const Primer = props => {
   const [residueFiltered, setResidueFiltered] = useState([]);
   const [pageUpdate, setPageUpdate] = useState(false);
   const [photo, setPhoto] = useState({
-    residuePhoto: "https://us.123rf.com/450wm/myvector/myvector1412/myvector141200159/34562731-stock-vector-separate-waste-collection-icon.jpg?ver=6",
     newResiduePhoto: [],
     loading: false
   });
@@ -140,23 +139,30 @@ const Primer = props => {
       headers: { 'X-Requested-With': 'XMLHttpRequest' }
     }).then(res => {
       const image = res.data.secure_url;
-      // console.log(residueChange._id)
+      console.log("foto", photo.newResiduePhoto[0])
+      const newImage = {
+        uid: photo.newResiduePhoto[0].uid,
+        name: photo.newResiduePhoto[0].name,
+        status: 'done',
+        url: image,
+        thumbUrl: image
+      };
+      console.log("nova imagem", newImage);
       if(residueChange._id !== undefined){
         axios.put('/api/residue', { id: residueChange._id, image }).then(res => {
-          setPhoto({ ...photo, newResiduePhoto: image, loading: false });
+          setPhoto({ newResiduePhoto: [newImage], loading: false });
           setPageUpdate(!pageUpdate);
           success();
         }).catch(err => {
-          setPhoto({ ...photo, loading: false });
+          setPhoto({ newResiduePhoto: [newImage], loading: false });
           error(err);
         });
       }else{
-        setPhoto({ ...photo, newResiduePhoto: image, loading: false });
+        setPhoto({ newResiduePhoto: [], loading: false });
         setPageUpdate(!pageUpdate);
       }
       
     }).catch(err => {
-      // console.log("deu erro muleke", err)
       setPhoto({ ...photo, loading: false });
       error(err);
     });
@@ -316,11 +322,45 @@ const Primer = props => {
             { getFieldDecorator('fotoDoResiduo')(
               <Row type = "flex" justify = "center">
                 <Col>
-                  <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto } />
-                  <Upload beforeUpload = { beforeUploadPhoto } customRequest = { () => changeResidue(residueModal._id) } fileList = { photo.newResiduePhoto } showUploadList = {false} accept = "image/*">
-                    <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> {residueModal._id ? "Editar Imagem" : "Adicionar Imagem"} </Button>
-                  </Upload>
-                </Col>
+                <Upload 
+                  beforeUpload = { beforeUploadPhoto } 
+                  customRequest = { () => changeResidue(residueModal._id) } 
+                  fileList = { photo.newResiduePhoto }
+                  accept = "image/*"
+                  listType = "picture"
+                >
+                  <Button>
+                    <Icon type="upload" /> Upload
+                  </Button>
+                </Upload>
+                {/* <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  beforeUpload = { beforeUploadPhoto } 
+                  customRequest = { () => changeResidue(residueModal._id) } 
+                  fileList = { photo.newResiduePhoto } 
+                  showUploadList = {false} 
+                  accept = "image/*"
+                >
+                  {photo.newResiduePhoto.length !== 0 ? <img src={photo.newResiduePhoto} alt="avatar" style={{ width: '100%' }} /> : 
+                    (
+                      <div>
+                        <Icon type={photo.loading ? 'loading' : 'plus'} />
+                        <div className="ant-upload-text">Upload</div>
+                      </div>
+                    )
+                  }
+                </Upload> */}
+                    {/* <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto } />
+                    <Upload 
+                      beforeUpload = { beforeUploadPhoto } 
+                      customRequest = { () => changeResidue(residueModal._id) } 
+                      fileList = { photo.newResiduePhoto } 
+                      showUploadList = {false} 
+                      accept = "image/*">
+                      <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> {residueModal._id ? "Editar Imagem" : "Adicionar Imagem"} </Button>
+                    </Upload> */}
+                  </Col>
               </Row>
             )}
           </Form.Item>
