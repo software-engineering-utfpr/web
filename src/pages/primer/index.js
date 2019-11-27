@@ -14,6 +14,7 @@ import GoogleMapReact from 'google-map-react';
 
 const { Text, Paragraph } = Typography;
 const { Search } = Input;
+const pinIcon = require('../../images/icons/pin-maps.png')
 
 const Primer = props => {
 
@@ -57,7 +58,7 @@ const Primer = props => {
     photo: ''
   });
 
-  const GOOGLE_MAPS_APIKEY = "AIzaSyBfbkA9k_JG99c-I5Zjslywmz9O4BlHH10";
+  const GOOGLE_MAPS_APIKEY = "AIzaSyAwDqlhR0aPR6lYhzkE2nWdUz6ufbzStLk";
 
   useEffect(() => {
     setLoadingPage(true);
@@ -322,7 +323,7 @@ const Primer = props => {
             { getFieldDecorator('fotoDoResiduo')(
               <Row type = "flex" justify = "center">
                 <Col>
-                <Upload 
+                {/* <Upload 
                   beforeUpload = { beforeUploadPhoto } 
                   customRequest = { () => changeResidue(residueModal._id) } 
                   fileList = { photo.newResiduePhoto }
@@ -332,7 +333,7 @@ const Primer = props => {
                   <Button>
                     <Icon type="upload" /> Upload
                   </Button>
-                </Upload>
+                </Upload> */}
                 {/* <Upload
                   name="avatar"
                   listType="picture-card"
@@ -351,7 +352,7 @@ const Primer = props => {
                     )
                   }
                 </Upload> */}
-                    {/* <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto } />
+                    <Avatar shape = "square" size = {200} src = { photo.newResiduePhoto.length === 0 ? photo.residuePhoto : photo.newResiduePhoto } />
                     <Upload 
                       beforeUpload = { beforeUploadPhoto } 
                       customRequest = { () => changeResidue(residueModal._id) } 
@@ -359,7 +360,7 @@ const Primer = props => {
                       showUploadList = {false} 
                       accept = "image/*">
                       <Button loading = { photo.loading } icon = "plus" type = "primary" style = {{ backgroundColor: '#2D2E2E', borderColor: '#2D2E2E', position: 'absolute', bottom: 2, left: 2 }}> {residueModal._id ? "Editar Imagem" : "Adicionar Imagem"} </Button>
-                    </Upload> */}
+                    </Upload>
                   </Col>
               </Row>
             )}
@@ -391,17 +392,16 @@ const Primer = props => {
           <Row style={{ height: '30vh', width: '100%' }}>
             <GoogleMapReact
               bootstrapURLKeys={{ key: GOOGLE_MAPS_APIKEY }}
-              defaultCenter={center}
+              center={residueModal._id ? marker : center}
               defaultZoom={15}
-              onClick = {({x, y, lat, lng, event}) =>  setMarker({lat, lng})}
+              onClick = {({x, y, lat, lng, event}) => { setMarker({lat, lng}); setCenter({lat, lng})}}
             >
-              <Icon 
-                type = "environment"
-                style = {{color:"red", fontSize: '30px'}}
-                theme="filled"
+              <Row 
                 lat={marker.lat}
                 lng={marker.lng}
-              />
+              >
+                <img src = { pinIcon } className = "img-icon" alt = "pinMap"/>
+              </Row>
             </GoogleMapReact>
 
           </Row>      

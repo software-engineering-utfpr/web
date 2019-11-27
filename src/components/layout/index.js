@@ -38,18 +38,11 @@ const MainLayout = props => {
                 <span> Calendário </span>
               </Link>
             </Menu.Item>
-            
-            <Menu.Item key = "app">
-              <Link to = "/usuarios-app">
-                <Icon type = "tablet" />
-                <span> Aplicativo </span>
-              </Link>
-            </Menu.Item>
 
             <Menu.Item key = "web">
               <Link to = "/usuarios-web">
                 <Icon type = "laptop" />
-                <span> Web </span>
+                <span> Usuários Web </span>
               </Link>
             </Menu.Item>
 

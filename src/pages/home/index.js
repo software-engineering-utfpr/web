@@ -11,7 +11,7 @@ import './style.css';
 
 axios.defaults.baseURL = 'https://rio-campo-limpo.herokuapp.com/';
 
-const GOOGLE_MAPS_APIKEY = "AIzaSyBfbkA9k_JG99c-I5Zjslywmz9O4BlHH10";
+const GOOGLE_MAPS_APIKEY = "AIzaSyAwDqlhR0aPR6lYhzkE2nWdUz6ufbzStLk";
 const pinIcon = require('../../images/icons/pin-maps.png')
 
 const Home = props => {
