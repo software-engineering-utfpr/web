@@ -15,6 +15,7 @@ import Games from './pages/games';
 import Primer from './pages/primer';
 
 import UsersWeb from './pages/users-web';
+import UsersApp from './pages/users-app';
 
 import Ocorrencias from './pages/occurrences';
 
@@ -42,6 +43,7 @@ const App = () => {
           <Route path = "/cartilha" exact component = { Primer } />
 
           <Route path = "/usuarios-web" exact component = { UsersWeb } />
+          <Route path = "/usuarios-app" exact component = { UsersApp } />
 
           <Route path = "/ocorrencias" exact component = { Ocorrencias } />
 

@@ -39,6 +39,13 @@ const MainLayout = props => {
               </Link>
             </Menu.Item>
 
+            <Menu.Item key = "app">
+              <Link to = "/usuarios-app">
+                <Icon type = "tablet" />
+                <span> Usuários Aplicativo </span>
+              </Link>
+            </Menu.Item>
+
             <Menu.Item key = "web">
               <Link to = "/usuarios-web">
                 <Icon type = "laptop" />

@@ -65,12 +65,21 @@ const NavBar = props => {
               </Menu.Item>
               
               <Menu.SubMenu title = "Gerenciamento">
-                <Menu.Item key = "web">
-                  <Link to = "/usuarios-web">
-                    <Icon type = "laptop" />
-                    <span> Usuários Web </span>
-                  </Link>
-                </Menu.Item>
+                <Menu.ItemGroup title = "Usuários">
+                  <Menu.Item key = "app">
+                    <Link to = "/usuarios-app">
+                      <Icon type = "tablet" />
+                      <span> Aplicativo </span>
+                    </Link>
+                  </Menu.Item>
+
+                  <Menu.Item key = "web">
+                    <Link to = "/usuarios-web">
+                      <Icon type = "laptop" />
+                      <span> Web </span>
+                    </Link>
+                  </Menu.Item>
+                </Menu.ItemGroup>
 
                 <Menu.Item key = "cartilha">
                   <Link to = "/cartilha">
