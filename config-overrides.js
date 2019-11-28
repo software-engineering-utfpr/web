@@ -19,7 +19,9 @@ module.exports = override(
       '@font-family': '"Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
       '@code-family': '"Open Sans", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace',
       '@text-color': '#2D2E2E',
-      '@error-color': '#FF5154',
+      '@error-color': '#EB3B5A',
+      '@btn-danger-bg': '#EB3B5A',
+      '@btn-danger-border': '#EB3B5A',
       '@warning-color': '#FFF460',
       '@success-color': '#5ECC62',
       '@link-color': '#2F80ED'

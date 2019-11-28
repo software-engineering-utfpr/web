@@ -59,6 +59,7 @@ const Categories = props => {
       setLoadingPage(false);
       error(err);
     });
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageUpdate]);
 
