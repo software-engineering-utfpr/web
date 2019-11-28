@@ -1,0 +1,25 @@
+.profile-form .ant-col.ant-form-item-label {
+  position: absolute;
+}
+
+.profile-form .ant-form-item { 
+  margin-bottom: 20px;
+}
+
+.tabs-card .ant-tabs-bar.ant-tabs-top-bar.ant-tabs-card-bar {
+  margin-bottom: 0px;
+}
+
+.editable-row .ant-form-explain {
+  position: absolute;
+  font-size: 12px;
+  margin-top: -4px;
+}
+
+.icon-check-color:hover {
+  color: #00AD45;
+}
+
+.icon-close-color:hover {
+  color: #EB3B5A;
+}

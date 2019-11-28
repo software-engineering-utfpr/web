@@ -19,6 +19,8 @@ import UsersApp from './pages/users-app';
 
 import Ocorrencias from './pages/occurrences';
 
+import Settings from './pages/settings';
+
 import 'moment/locale/pt-br';
 import './App.css';
 
@@ -46,6 +48,8 @@ const App = () => {
           <Route path = "/usuarios-app" exact component = { UsersApp } />
 
           <Route path = "/ocorrencias" exact component = { Ocorrencias } />
+
+          <Route path = "/configuracoes" exact component = { Settings } />
 
           <Route path = "/*" component = { Login } />
         </Switch>

@@ -118,13 +118,26 @@ const NavBar = props => {
                       description = {<Text type = "secondary" ellipsis style = {{ width: '100%' }}> { user.email } </Text>}
                     />
 
-                    <Menu className = "header-card-list-options">
+                    <Menu className = "header-card-list-options" selectedKeys = {[props.page]}>
                       <Menu.Item key = "perfil">
                         <Link to = "/edit/profile" replace>
                           <Card.Meta
                             avatar = {<Icon style = {{ fontSize: 20 }} type = "idcard" />}
                             title = {<Text style = {{ fontSize: 13 }}> Meu Perfil </Text>}
                             description = {<Text type = "secondary" ellipsis style = {{ width: '100%', fontSize: 11 }}> Edite as suas Informações de perfil e sua senha. </Text>}
+                          />
+                          <Icon className = "header-card-right-icon" type = "right" />
+                        </Link>
+                      </Menu.Item>
+
+                      <Menu.Divider />
+
+                      <Menu.Item key = "configuracoes">
+                        <Link to = "/configuracoes" replace>
+                          <Card.Meta
+                            avatar = {<Icon style = {{ fontSize: 20 }} type = "setting" />}
+                            title = {<Text style = {{ fontSize: 13 }}> Configurações </Text>}
+                            description = {<Text type = "secondary" ellipsis style = {{ width: '100%', fontSize: 11 }}> Gerencie categorias e configure informações do sistema. </Text>}
                           />
                           <Icon className = "header-card-right-icon" type = "right" />
                         </Link>
