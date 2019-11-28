@@ -90,7 +90,7 @@ const Occurrences = props => {
             <>
               <Row type = "flex">
                 <div
-                  style={{
+                  style = {{
                     width: 300,
                     boxSizing: 'border-box'
                   }}

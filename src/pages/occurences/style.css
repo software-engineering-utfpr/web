@@ -3,6 +3,7 @@
   width: 100%;
   object-fit: contain;
   border-radius: 4px;
+  object-position: 50% 100%;
 }
 
 .ant-carousel .slick-slide {
