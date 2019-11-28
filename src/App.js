@@ -16,7 +16,7 @@ import Primer from './pages/primer';
 
 import UsersWeb from './pages/users-web';
 
-import Ocorrencias from './pages/occurences';
+import Ocorrencias from './pages/occurrences';
 
 import 'moment/locale/pt-br';
 import './App.css';
