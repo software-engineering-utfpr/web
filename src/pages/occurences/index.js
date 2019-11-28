@@ -23,7 +23,7 @@ const Occurrences = props => {
     color: '#2F80ED',
     label: 'Pendente'
   }, {
-    value: 'approved',
+    value: 'aproved',
     color: '#00AD45',
     label: 'Aprovado'
   }, {

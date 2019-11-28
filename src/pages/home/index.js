@@ -23,7 +23,7 @@ const Home = props => {
     color: '#2F80ED',
     label: 'Pendente'
   }, {
-    value: 'approved',
+    value: 'aproved',
     color: '#00AD45',
     label: 'Aprovado'
   }, {
@@ -48,7 +48,7 @@ const Home = props => {
 
     axios.get('/api/occurrences').then(res => {
       setOccurrences(res.data);
-      setOccurrencesFiltered(res.data.filter(r => ['pending', 'approved'].includes(r.status)));
+      setOccurrencesFiltered(res.data.filter(r => ['pending', 'aproved'].includes(r.status)));
       setLoadingPage(false);
     }).catch((err) => {
       setLoadingPage(false);
@@ -83,7 +83,7 @@ const Home = props => {
             <Col span = {14} style = {{ textAlign: 'right' }}>
               <Checkbox.Group
                 options = {tags}
-                defaultValue = {['pending', 'approved']}
+                defaultValue = {['pending', 'aproved']}
                 onChange = {onChangeOptions}
               />
             </Col>
