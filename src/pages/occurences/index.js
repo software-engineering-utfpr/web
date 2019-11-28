@@ -25,11 +25,11 @@ const Occurrences = props => {
   }, {
     value: 'aproved',
     color: '#00AD45',
-    label: 'Aprovado'
+    label: 'Aprovada'
   }, {
     value: 'reproved',
     color: '#FF7D7A',
-    label: 'Reprovado'
+    label: 'Reprovada'
   }];
 
   const [loadingPage, setLoadingPage] = useState(true);
