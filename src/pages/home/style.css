@@ -3,3 +3,7 @@
     margin-top: -32px;
     margin-left: -16px;
 }
+
+.ant-popover {
+    z-index: 999 !important;
+}

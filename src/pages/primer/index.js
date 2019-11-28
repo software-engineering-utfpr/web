@@ -35,7 +35,7 @@ const Primer = props => {
     loading: false,
     coordinates: {
       lat: -24.046,
-      lng: -52.3838 
+      lng: -52.3838
     },
   });
 
@@ -385,7 +385,7 @@ const Primer = props => {
               alt = "pinMap"
             />
           </GoogleMapReact>
-        </Row>      
+        </Row>
       </Modal>
     </MainLayout>
   );

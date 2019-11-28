@@ -16,6 +16,8 @@ import Primer from './pages/primer';
 
 import UsersWeb from './pages/users-web';
 
+import Ocorrencias from './pages/occurences';
+
 import 'moment/locale/pt-br';
 import './App.css';
 
@@ -40,6 +42,8 @@ const App = () => {
           <Route path = "/cartilha" exact component = { Primer } />
 
           <Route path = "/usuarios-web" exact component = { UsersWeb } />
+
+          <Route path = "/ocorrencias" exact component = { Ocorrencias } />
 
           <Route path = "/*" component = { Login } />
         </Switch>
