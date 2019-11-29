@@ -7,7 +7,7 @@
 }
 
 .login-box {
-  width: 500px;
+  max-width: 500px;
   box-shadow: rgba(31, 45, 61, 0.08) 0px 0px 1.25rem;
   margin: 0;
   position: absolute;
@@ -34,4 +34,18 @@
 .login-form .has-error .ant-form-explain, .login-form .has-error .ant-form-split {
   margin-top: 2px;
   font-size: 12px;
+}
+
+@media only screen and (max-width: 900px) {
+  .login-box {
+    right: 0;
+    margin: 0 auto;
+    position: relative;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .login-box {
+    width: calc(100% - 30px);
+  }
 }
