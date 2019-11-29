@@ -7,3 +7,11 @@
 .ant-popover {
     z-index: 999 !important;
 }
+
+.ant-card-head-wrapper {
+    display: block;
+}
+
+.ant-list-item-meta-content {
+    overflow: hidden;
+}

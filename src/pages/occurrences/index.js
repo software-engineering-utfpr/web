@@ -72,7 +72,7 @@ const Occurrences = props => {
         }
       >
         <Row gutter = {24} type = "flex" justify = "end" style = {{ marginBottom: 18 }}>
-          <Col span = {14}>
+          <Col sm = {14} xs = {24}>
             <Search
               placeholder = "Pesquise pelo id"
               onChange = { e => searchByName(e) }

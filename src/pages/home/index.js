@@ -105,7 +105,7 @@ const Home = props => {
           extra = {<Button type = "primary" icon = "align-left" onClick = { () => setNav('/ocorrencias') }> Ver todas Ocorrências </Button>}
         >
           <Row gutter = {24} type = "flex" justify = "end" style = {{ marginBottom: 18 }}>
-            <Col span = {14} style = {{ textAlign: 'right' }}>
+            <Col sm = {14} xs = {24} style = {{ textAlign: 'right' }}>
               <Checkbox.Group
                 options = {tags}
                 value = {tagsActive}

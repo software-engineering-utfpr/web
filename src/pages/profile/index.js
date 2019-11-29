@@ -156,7 +156,7 @@ const Profile = props => {
   return (
     <MainLayout page = "Perfil" loading = {loadingPage} title = "Pefil do Usuário" breadcrumb = {['Meu Perfil']}>
       <Row gutter = {16}>
-        <Col span = {7}>  
+        <Col lg = {7} md = {10} sm = {15} style = {{ marginTop: 30 }}>  
           <Card bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}>
             { isAdmin() === 'true' ? (
               <Badge count = {<Popover placement = "right" content = "Administrador"> <Icon type = "star" theme = "filled" style = {{ color: '#FFFFFF', background: '#5ECC62', borderRadius: '50%', padding: 8, marginTop: 10, marginRight: 10 }}/> </Popover>}>
@@ -179,7 +179,8 @@ const Profile = props => {
             </Menu>
           </Card>
         </Col>
-        <Col span = {17}>
+
+        <Col lg = {17} md = {14} sm = {24} style = {{ marginTop: 30 }}>
           <Card bordered = {false} className = "alert-card" style = {{ borderRadius: 5 }}
             title = {
               <>
@@ -237,7 +238,7 @@ const Profile = props => {
             ) : (
               <Form onSubmit = { handleEditPassword }>
                 <Row gutter = {16}>
-                  <Col span = {12}>
+                  <Col xs = {18} sm = {12}>
                     <Form.Item label = "Senha">
                       { getFieldDecorator('password', {
                         initialValue: '',
@@ -255,7 +256,7 @@ const Profile = props => {
                     </Form.Item>
                   </Col>
 
-                  <Col span = {12}>
+                  <Col xs = {18} sm = {12}>
                     <Form.Item label = "Confirmar Senha">
                       { getFieldDecorator('confirmPassword', {
                         initialValue: '',

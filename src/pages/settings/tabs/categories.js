@@ -105,7 +105,7 @@ const Categories = props => {
   return(
     <EditableContext.Provider value = {props.form}>
       <Row gutter = {24} type = "flex" justify = "end" style = {{ marginBottom: 18 }}>
-        <Col span = {14} style = {{ textAlign: 'right' }}>
+        <Col sm = {14} xs = {20} style = {{ textAlign: 'right' }}>
           <Button onClick = { createCategory } type = "primary" icon = "plus"> Nova Categoria </Button>
         </Col>
       </Row>
